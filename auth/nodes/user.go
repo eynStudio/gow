@@ -43,7 +43,7 @@ func (p *UserNode) Get(c *gweb.Ctx) {
 
 func (p *UserNode) Post(c *gweb.Ctx) {
 	if c.JMethod() == "List" {
-		//		c.Json(p.GetResTree())
+		c.Json(p.GetUserPage())
 	} else if c.Scope.HasKey("id") {
 		c.Json(p.UserRepo.Get(c.Get("id")))
 	} else {

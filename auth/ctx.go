@@ -7,6 +7,8 @@ import (
 	"github.com/eynstudio/gow/auth/user"
 
 	. "github.com/eynstudio/gobreak"
+	//	"github.com/eynstudio/gobreak/db"
+	//	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gobreak/dddd"
 	"github.com/eynstudio/gobreak/di"
 )
@@ -93,3 +95,20 @@ func (p *AuthCtx) GetOrgTree() []*TreeNode {
 func (p *AuthCtx) GetRoleTree() []*TreeNode {
 	return BuildTree(p.RoleRepo.All())
 }
+
+func (p *AuthCtx) GetUserPage() T {
+	return p.UserRepo.All()
+}
+
+//func (p *AuthCtx) GetUserPage(page *filter.PageFilter) *db.Paging {
+//	lst := []AuthUserLine{}
+
+//	if s := page.Search(); s != "" {
+//		fg := filter.NewOrGroup()
+//		fg.AddRule(filter.Rule{F: "Xm", O: "like", V1: s})
+//		fg.AddRule(filter.Rule{F: "Mc", O: "like", V1: s})
+//		page.AddGroup(fg)
+//	}
+
+//	return p.Orm.Page(&lst, page)
+//}
