@@ -9,7 +9,6 @@ import (
 )
 
 type User struct {
-	Entity
 	Id     GUID       `bson:"_id,omitempty"`
 	Mc     string     `Mc`
 	Nc     string     `Nc` //昵称
@@ -27,9 +26,8 @@ func (p *User) AddGroup(gid GUID) {
 		p.Groups = append(p.Groups, gid)
 	}
 }
-func (p *User) DelGroup(id GUID) {
-	Slice(&p.Groups).RemoveEntity(id)
-}
+func (p *User) DelGroup(id GUID) { Slice(&p.Groups).RemoveEntity(id) }
+func (p User) ID() GUID          { return p.Id }
 
 func NewUser() *User {
 	return &User{Id: NewGuid(), Lock: false, Auth: make([]UserAuth, 0), Groups: make([]GUID, 0)}

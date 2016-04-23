@@ -13,7 +13,7 @@ type RoleRepo struct {
 }
 
 func NewRoleRepo() *RoleRepo {
-	return &RoleRepo{NewMgoRepo("AuthRole", func() T { return &role.Role{} })}
+	return &RoleRepo{NewMgoRepo("AuthRole", func() T { return role.NewRole() })}
 }
 
 type RoleEventHandler struct {

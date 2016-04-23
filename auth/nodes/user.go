@@ -1,6 +1,9 @@
 package nodes
 
 import (
+	"fmt"
+
+	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
 	"github.com/eynstudio/gow/auth/user"
 	"github.com/eynstudio/gweb"
@@ -13,6 +16,7 @@ type UserNode struct {
 
 func NewUserNode() *UserNode {
 	h := &UserNode{Node: gweb.NewNode("user", true)}
+	h.NewParamNode("id", true)
 	return h
 }
 
@@ -20,9 +24,11 @@ func (p *UserNode) Handler(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":
-		//		p.Get(c)
+		p.Get(c)
 	case "POST":
 		p.Post(c)
+	case "PUT":
+		p.Put(c)
 	case "DELETE":
 		c.OK()
 	default:
@@ -32,15 +38,7 @@ func (p *UserNode) Handler(c *gweb.Ctx) {
 }
 
 func (p *UserNode) Get(c *gweb.Ctx) {
-	//	jbreak := c.Req.Header.Get("Authorization")
-	//	if jbreak != "" {
-	//		token := strings.Split(jbreak, " ")[1]
-	//		if user, ok := p.LoginByToken(token); ok {
-	//			c.Json(user)
-	//			return
-	//		}
-	//	}
-	//	c.Forbidden()
+
 }
 
 func (p *UserNode) Post(c *gweb.Ctx) {
@@ -51,12 +49,12 @@ func (p *UserNode) Post(c *gweb.Ctx) {
 	} else {
 		c.Json(&user.User{Id: p.UserRepo.NewId()})
 	}
-	//	var login auth.Login
-	//	c.Req.JsonBody(&login)
-	//	log.Println(login)
-	//	if user, ok := p.Login(&login); ok {
-	//		c.Json(user)
-	//		return
-	//	}
-	//	c.Json(auth.LoginErr{"登录失败"})
+}
+
+func (p *UserNode) Put(c *gweb.Ctx) {
+	var m user.SaveUser
+	c.Req.JsonBody(&m)
+	if err := cmdbus.Exec(&m); err != nil {
+		fmt.Errorf("%#v", err)
+	}
 }

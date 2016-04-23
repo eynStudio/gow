@@ -1,6 +1,9 @@
 package nodes
 
 import (
+	"fmt"
+
+	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
 	"github.com/eynstudio/gow/auth/role"
 	"github.com/eynstudio/gweb"
@@ -13,6 +16,7 @@ type RoleNode struct {
 
 func NewRoleNode() *RoleNode {
 	h := &RoleNode{Node: gweb.NewNode("role", true)}
+	h.NewParamNode("id", true)
 	return h
 }
 
@@ -20,9 +24,11 @@ func (p *RoleNode) Handler(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":
-		//		p.Get(c)
+		p.Get(c)
 	case "POST":
 		p.Post(c)
+	case "PUT":
+		p.Put(c)
 	case "DELETE":
 		c.OK()
 	default:
@@ -32,15 +38,6 @@ func (p *RoleNode) Handler(c *gweb.Ctx) {
 }
 
 func (p *RoleNode) Get(c *gweb.Ctx) {
-	//	jbreak := c.Req.Header.Get("Authorization")
-	//	if jbreak != "" {
-	//		token := strings.Split(jbreak, " ")[1]
-	//		if user, ok := p.LoginByToken(token); ok {
-	//			c.Json(user)
-	//			return
-	//		}
-	//	}
-	//	c.Forbidden()
 }
 
 func (p *RoleNode) Post(c *gweb.Ctx) {
@@ -49,14 +46,13 @@ func (p *RoleNode) Post(c *gweb.Ctx) {
 	} else if c.Scope.HasKey("id") {
 		c.Json(p.RoleRepo.Get(c.Get("id")))
 	} else {
-		c.Json(&role.Role{Id: p.RoleRepo.NewId()})
+		c.Json(&role.Role{Id: p.RoleRepo.NewId(), Res: []role.Permission{}})
 	}
-	//	var login auth.Login
-	//	c.Req.JsonBody(&login)
-	//	log.Println(login)
-	//	if user, ok := p.Login(&login); ok {
-	//		c.Json(user)
-	//		return
-	//	}
-	//	c.Json(auth.LoginErr{"登录失败"})
+}
+func (p *RoleNode) Put(c *gweb.Ctx) {
+	var m role.SaveRole
+	c.Req.JsonBody(&m)
+	if err := cmdbus.Exec(&m); err != nil {
+		fmt.Errorf("%#v", err)
+	}
 }

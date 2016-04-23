@@ -8,7 +8,6 @@ import (
 )
 
 type Res struct {
-	Entity
 	Id     GUID   `bson:"_id,omitempty"`
 	Mc     string `Mc`
 	Bz     string `Bz`

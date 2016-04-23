@@ -8,7 +8,6 @@ import (
 )
 
 type Org struct {
-	Entity
 	Id     GUID    `bson:"_id,omitempty"`
 	Mc     string  `Mc`
 	Dm     string  `Dm`
@@ -18,6 +17,7 @@ type Org struct {
 	Params `Params`
 }
 
+func (p Org) ID() GUID       { return p.Id }
 func (p Org) GetMc() string  { return p.Mc }
 func (p Org) GetUri() string { return p.Uri }
 func (p Org) GetQz() int     { return p.Qz }

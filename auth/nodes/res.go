@@ -38,15 +38,6 @@ func (p *ResNode) Handler(c *gweb.Ctx) {
 }
 
 func (p *ResNode) Get(c *gweb.Ctx) {
-	//	jbreak := c.Req.Header.Get("Authorization")
-	//	if jbreak != "" {
-	//		token := strings.Split(jbreak, " ")[1]
-	//		if user, ok := p.LoginByToken(token); ok {
-	//			c.Json(user)
-	//			return
-	//		}
-	//	}
-	//	c.Forbidden()
 }
 
 func (p *ResNode) Post(c *gweb.Ctx) {
@@ -57,20 +48,12 @@ func (p *ResNode) Post(c *gweb.Ctx) {
 	} else {
 		c.Json(&res.Res{Id: p.ResRepo.NewId()})
 	}
-	//	var login auth.Login
-	//	c.Req.JsonBody(&login)
-	//	log.Println(login)
-	//	if user, ok := p.Login(&login); ok {
-	//		c.Json(user)
-	//		return
-	//	}
-	//	c.Json(auth.LoginErr{"登录失败"})
 }
 
 func (p *ResNode) Put(c *gweb.Ctx) {
 	var m res.SaveRes
 	c.Req.JsonBody(&m)
-	if err := cmdbus.Exec((*res.SaveRes)(&m)); err != nil {
+	if err := cmdbus.Exec(&m); err != nil {
 		fmt.Errorf("%#v", err)
 	}
 
