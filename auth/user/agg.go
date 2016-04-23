@@ -87,6 +87,5 @@ func (p *UserAgg) ApplyEvent(event Event) {
 	p.StoreEvent(event)
 }
 
-func (p *UserAgg) Root() Entity {
-	return &p.root
-}
+func (p *UserAgg) Root() Entity { return &p.root }
+func (p *UserAgg) ID() GUID     { return p.root.ID() }

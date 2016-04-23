@@ -54,3 +54,4 @@ func (p *RoleAgg) ApplyEvent(event Event) {
 }
 
 func (p *RoleAgg) Root() Entity { return &p.root }
+func (p *RoleAgg) ID() GUID     { return p.root.ID() }

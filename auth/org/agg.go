@@ -86,3 +86,4 @@ func (p *OrgAgg) ApplyEvent(event Event) {
 }
 
 func (p *OrgAgg) Root() Entity { return &p.root }
+func (p *OrgAgg) ID() GUID     { return p.root.ID() }

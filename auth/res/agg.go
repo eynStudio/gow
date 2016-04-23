@@ -49,6 +49,9 @@ type ResAgg struct {
 	root Res
 }
 
+func (p *ResAgg) ID() GUID     { return p.root.ID() }
+func (p *ResAgg) Root() Entity { return &p.root }
+
 func (p *ResAgg) RegistedCmds() []Cmd {
 	return []Cmd{&SaveRes{}, &DelRes{}, &SaveResOpt{}, &DelResOpt{}}
 }
@@ -56,12 +59,16 @@ func (p *ResAgg) RegistedCmds() []Cmd {
 func (p *ResAgg) HandleCmd(cmd Cmd) error {
 	switch cmd := cmd.(type) {
 	case *SaveRes:
+		p.root = Res(*cmd)
 		p.ApplyEvent((*ResSaved)(cmd))
 	case *DelRes:
+		p.root = Res{}
 		p.ApplyEvent((*ResDeleted)(cmd))
 	case *SaveResOpt:
+		p.root.ReplaceOpt(cmd.Opt)
 		p.ApplyEvent((*ResOptSaved)(cmd))
 	case *DelResOpt:
+		p.root.DelOpt(cmd.OptId)
 		p.ApplyEvent((*ResOptDeleted)(cmd))
 	default:
 		fmt.Println("ResAgg HandleCmd: no handler")
@@ -70,22 +77,14 @@ func (p *ResAgg) HandleCmd(cmd Cmd) error {
 }
 
 func (p *ResAgg) ApplyEvent(event Event) {
-	switch evt := event.(type) {
+	switch event.(type) {
 	case *ResSaved:
-		p.root = Res(*evt)
 	case *ResDeleted:
-		p.root = Res{}
 	case *ResOptSaved:
-		p.root.ReplaceOpt(evt.Opt)
 	case *ResOptDeleted:
-		p.root.DelOpt(evt.OptId)
 	default:
 		fmt.Println("ResAgg ApplyEvent: no handler")
 	}
 
 	p.StoreEvent(event)
-}
-
-func (p *ResAgg) Root() Entity {
-	return &p.root
 }
