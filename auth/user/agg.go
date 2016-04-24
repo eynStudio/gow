@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"time"
 
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
@@ -9,16 +10,18 @@ import (
 )
 
 type User struct {
-	Id     GUID       `bson:"_id,omitempty"`
-	Mc     string     `Mc`
-	Nc     string     `Nc` //昵称
-	Img    string     `Img`
-	Pwd    string     `Pwd`
-	Xm     string     `Xm`
-	Bz     string     `Bz`
-	Lock   bool       `Lock`
-	Auth   []UserAuth `Auth`
-	Groups []GUID     `Groups`
+	Id         GUID       `bson:"_id,omitempty"`
+	Mc         string     `Mc`
+	Nc         string     `Nc` //昵称
+	Img        string     `Img`
+	Pwd        string     `Pwd`
+	Xm         string     `Xm`
+	Bz         string     `Bz`
+	Lock       bool       `Lock`
+	CreateTime time.Time  `CreateTime`
+	Auth       []UserAuth `Auth`
+	Groups     []GUID     `Groups`
+	Roles      []GUID     `Roles`
 }
 
 func (p *User) AddGroup(gid GUID) {
@@ -26,11 +29,20 @@ func (p *User) AddGroup(gid GUID) {
 		p.Groups = append(p.Groups, gid)
 	}
 }
+func (p *User) AddRole(rid GUID) {
+	if -1 == Slice(&p.Roles).FindEntityIndex(rid) {
+		p.Roles = append(p.Roles, rid)
+	}
+}
 func (p *User) DelGroup(id GUID) { Slice(&p.Groups).RemoveEntity(id) }
+func (p *User) DelRole(id GUID)  { Slice(&p.Roles).RemoveEntity(id) }
 func (p User) ID() GUID          { return p.Id }
 
 func NewUser() *User {
-	return &User{Id: NewGuid(), Lock: false, Auth: make([]UserAuth, 0), Groups: make([]GUID, 0)}
+	return &User{Id: NewGuid(), Lock: false, CreateTime: time.Now(),
+		Auth:   make([]UserAuth, 0),
+		Groups: make([]GUID, 0),
+	}
 }
 
 type UserAuth struct {
