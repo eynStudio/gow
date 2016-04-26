@@ -25,6 +25,21 @@ func (p *UserRepo) GetById(id GUID) (u User, ok bool) {
 	return u, u.Id != ""
 }
 
+func (p *UserRepo) HasUserByMc(mc string) (has bool, err error) {
+	sess := p.CopySession()
+	defer sess.Close()
+	var n int
+	n, err = p.C(sess).Find(bson.M{"Mc": mc}).Count()
+	return n > 0, err
+}
+
+func (p *UserRepo) GetUserByMc(mc string) (u User, ok bool) {
+	sess := p.CopySession()
+	defer sess.Close()
+	err := p.C(sess).Find(bson.M{"Mc": mc}).One(&u)
+	return u, err == nil
+}
+
 func (p *UserRepo) GetUser(name, pwd string) (u User, ok bool) {
 	sess := p.CopySession()
 	defer sess.Close()
