@@ -1,15 +1,16 @@
-package dayu
+package alidayu
 
 import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	. "github.com/eynstudio/gobreak"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	. "github.com/eynstudio/gobreak"
 )
 
 const (
