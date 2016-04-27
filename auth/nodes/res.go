@@ -20,7 +20,7 @@ func NewResNode() *ResNode {
 	return h
 }
 
-func (p *ResNode) Handler(c *gweb.Ctx) {
+func (p *ResNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":

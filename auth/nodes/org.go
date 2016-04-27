@@ -20,7 +20,7 @@ func NewOrgNode() *OrgNode {
 	return h
 }
 
-func (p *OrgNode) Handler(c *gweb.Ctx) {
+func (p *OrgNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":

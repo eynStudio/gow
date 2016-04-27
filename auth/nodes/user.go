@@ -20,7 +20,7 @@ func NewUserNode() *UserNode {
 	return h
 }
 
-func (p *UserNode) Handler(c *gweb.Ctx) {
+func (p *UserNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":

@@ -22,7 +22,7 @@ func NewAuthNode() *AuthNode {
 	return h
 }
 
-func (p *AuthNode) Handler(c *gweb.Ctx) {
+func (p *AuthNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":

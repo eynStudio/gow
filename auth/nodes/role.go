@@ -20,7 +20,7 @@ func NewRoleNode() *RoleNode {
 	return h
 }
 
-func (p *RoleNode) Handler(c *gweb.Ctx) {
+func (p *RoleNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
 	case "GET":
