@@ -10,7 +10,7 @@ import (
 )
 
 type User struct {
-	Id         GUID       `bson:"_id,omitempty"`
+	Id         GUID       `bson:"_id"`
 	Mc         string     `Mc`
 	Nc         string     `Nc` //昵称
 	Img        string     `Img`
@@ -60,20 +60,28 @@ type UserAgg struct {
 }
 
 func (p *UserAgg) RegistedCmds() []Cmd {
-	return []Cmd{&SaveUser{}, &DelUser{}, &SaveUserGroup{}, &DelUserGroup{}, &UpdateUserPwd{}}
+	return []Cmd{&SaveUser{}, &DelUser{}, &SaveUserGroup{}, &DelUserGroup{}, &UpdateUserPwd{}, &UpdateUserNc{}}
 }
 
 func (p *UserAgg) HandleCmd(cmd Cmd) error {
 	switch cmd := cmd.(type) {
 	case *SaveUser:
+		p.root = User(*cmd)
 		p.ApplyEvent((*UserSaved)(cmd))
 	case *DelUser:
+		p.root = User{}
 		p.ApplyEvent((*UserDeleted)(cmd))
 	case *UpdateUserPwd:
+		p.root.Pwd = cmd.Pwd
 		p.ApplyEvent((*UserPwdUpdated)(cmd))
+	case *UpdateUserNc:
+		p.root.Nc = cmd.Nc
+		p.ApplyEvent((*UserNcUpdated)(cmd))
 	case *SaveUserGroup:
+		p.root.AddGroup(cmd.GroupId)
 		p.ApplyEvent((*UserGroupSaved)(cmd))
 	case *DelUserGroup:
+		p.root.DelGroup(cmd.GroupId)
 		p.ApplyEvent((*UserGroupDeleted)(cmd))
 	default:
 		fmt.Println("UserAgg HandleCmd: no handler")
@@ -82,18 +90,6 @@ func (p *UserAgg) HandleCmd(cmd Cmd) error {
 }
 
 func (p *UserAgg) ApplyEvent(event Event) {
-	switch evt := event.(type) {
-	case *UserSaved:
-		p.root = User(*evt)
-	case *UserDeleted:
-		p.root = User{}
-	case *UserPwdUpdated:
-		p.root.Pwd = evt.Pwd
-	case *UserGroupSaved:
-		p.root.AddGroup(evt.GroupId)
-	case *UserGroupDeleted:
-		p.root.DelGroup(evt.GroupId)
-	}
 	p.StoreEvent(event)
 }
 

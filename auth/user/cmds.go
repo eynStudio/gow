@@ -30,3 +30,17 @@ type UpdateUserPwd struct {
 }
 
 func (p *UpdateUserPwd) ID() GUID { return p.Id }
+
+type UpdateUserNc struct {
+	Id GUID
+	Nc string
+}
+
+func (p *UpdateUserNc) ID() GUID { return p.Id }
+
+type UpdateUserImg struct {
+	Id  GUID
+	Img string
+}
+
+func (p *UpdateUserImg) ID() GUID { return p.Id }
