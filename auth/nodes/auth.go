@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"log"
-	"strings"
 
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gow/auth"
@@ -39,14 +38,20 @@ func (p *AuthNode) Handler(c *gweb.Ctx) {
 }
 
 func (p *AuthNode) Get(c *gweb.Ctx) {
-	jbreak := c.Req.Header.Get("Authorization")
-	if jbreak != "" {
-		token := strings.Split(jbreak, " ")[1]
-		if user, ok := p.LoginByToken(token); ok {
+	if c.HasToken() {
+		if user, ok := p.LoginByToken(c.Token); ok {
 			c.Json(user)
 			return
 		}
 	}
+	//	jbreak := c.Req.Header.Get("Authorization")
+	//	if jbreak != "" {
+	//		token := strings.Split(jbreak, " ")[1]
+	//		if user, ok := p.LoginByToken(token); ok {
+	//			c.Json(user)
+	//			return
+	//		}
+	//	}
 	c.Forbidden()
 }
 

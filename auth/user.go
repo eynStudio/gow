@@ -8,7 +8,6 @@ import (
 
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
-	. "github.com/eynstudio/gobreak/ddd"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -72,31 +71,4 @@ func (p *UserRepo) AddGroup(uid, gid GUID) {
 }
 func (p *UserRepo) DelGroup(uid, gid GUID) {
 	p.Save(uid, bson.M{"$pull": bson.M{"Groups": gid}})
-}
-
-type UserEventHandler struct {
-	Repo *UserRepo `di`
-}
-
-func (p *UserEventHandler) RegistedEvents() []Event {
-	return []Event{&UserSaved{}, &UserDeleted{}, &UserGroupSaved{}, &UserGroupDeleted{}, &UserPwdUpdated{}}
-}
-
-func (p *UserEventHandler) HandleEvent(event Event) {
-	switch event := event.(type) {
-	case *UserSaved:
-		p.Repo.Save(event.ID(), event)
-	case *UserDeleted:
-		p.Repo.Del(event.ID())
-	case *UserPwdUpdated:
-		p.Repo.UpdateSetFiled(event.ID(), "Pwd", event.Pwd)
-	case *UserGroupSaved:
-		m := p.Repo.Get(event.ID()).(*User)
-		m.AddGroup(event.GroupId)
-		p.Repo.Save(m.Id, m)
-	case *UserGroupDeleted:
-		m := p.Repo.Get(event.ID()).(*User)
-		m.DelGroup(event.GroupId)
-		p.Repo.Save(m.Id, m)
-	}
 }

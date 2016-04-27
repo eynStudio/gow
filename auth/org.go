@@ -1,14 +1,11 @@
 package auth
 
 import (
-	"fmt"
-
 	. "github.com/eynstudio/gow/auth/org"
 	"gopkg.in/mgo.v2/bson"
 
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
-	. "github.com/eynstudio/gobreak/ddd"
 )
 
 type OrgRepo struct {
@@ -31,31 +28,4 @@ func (p *OrgRepo) GetGroupByMc(uri, groupMc string) (m *Group) {
 		}
 	}
 	return nil
-}
-
-type OrgEventHandler struct {
-	Repo *OrgRepo `di`
-}
-
-func (p *OrgEventHandler) RegistedEvents() []Event {
-	return []Event{&OrgSaved{}, &OrgDeleted{}, &OrgGroupSaved{}, &OrgGroupDeleted{}}
-}
-
-func (p *OrgEventHandler) HandleEvent(event Event) {
-	switch event := event.(type) {
-	case *OrgSaved:
-		p.Repo.Save(event.ID(), event)
-	case *OrgDeleted:
-		p.Repo.Del(event.ID())
-	case *OrgGroupSaved:
-		m := p.Repo.Get(event.ID()).(*Org)
-		m.ReplaceGroup(event.Group)
-		p.Repo.Save(m.Id, m)
-	case *OrgGroupDeleted:
-		m := p.Repo.Get(event.ID()).(*Org)
-		m.DelGroup(event.GroupId)
-		p.Repo.Save(m.Id, m)
-	default:
-		fmt.Println("OrgEventHandler: no handler")
-	}
 }

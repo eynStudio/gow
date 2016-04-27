@@ -11,7 +11,7 @@ type Login struct {
 }
 
 type LoginOk struct {
-	Id   GUID
+	Id   string
 	Name string
 	Navs []*TreeNode
 }

@@ -7,16 +7,9 @@ import (
 	"github.com/eynstudio/gow/auth/user"
 
 	. "github.com/eynstudio/gobreak"
-	//	"github.com/eynstudio/gobreak/db"
-	//	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gobreak/dddd"
 	"github.com/eynstudio/gobreak/di"
 )
-
-//func NewRegistedEventHandler(handler RegistedEventsHandler) RegistedEventsHandler {
-//	di.Root.Apply(handler)
-//	return handler
-//}
 
 func Init() {
 	repoRes := NewResRepo()
@@ -39,50 +32,16 @@ func Init() {
 }
 
 type AuthCtx struct {
-	*ResRepo  `di`
-	*OrgRepo  `di`
-	*RoleRepo `di`
-	*UserRepo `di`
+	*ResRepo       `di`
+	*OrgRepo       `di`
+	*RoleRepo      `di`
+	*UserRepo      `di`
+	OnLogin        func(login *Login) (*LoginOk, bool)
+	OnLoginByToken func(token string) (*LoginOk, bool)
 }
 
-func (p *AuthCtx) LoginByToken(token string) (*LoginOk, bool) {
-
-	if token == "000000000000000000000000" {
-		return &LoginOk{"000000000000000000000000", "超级管理员", p.GetResTree()}, true
-	}
-
-	//	if !bson.IsObjectIdHex(token) {
-	//		return nil, false
-	//	}
-
-	//	u := p.UserRepo.Get(token).(*user.User)
-	//	if u.Mc == "" {
-	//		return nil, false
-	//	} else {
-	//		return &LoginOk{u.Id, u.Mc, p.GetResTreeByUser(u)}, true
-	//	}
-
-	return nil, false
-}
-
-func (p *AuthCtx) Login(login *Login) (*LoginOk, bool) {
-
-	if login.UserName == "Super" {
-		return &LoginOk{"000000000000000000000000", "超级管理员", p.GetResTree()}, true
-	}
-
-	//	authPass := false
-	//	var u user.User
-
-	//	u, authPass = p.UserRepo.GetUser(login.UserName, login.UserPwd)
-
-	//	if authPass {
-	//		return &LoginOk{u.Id, u.Mc, p.GetResTreeByUser(&u)}, true
-	//	} else {
-	//		return nil, false
-	//	}
-	return nil, false
-}
+func (p *AuthCtx) LoginByToken(token string) (*LoginOk, bool) { return p.OnLoginByToken(token) }
+func (p *AuthCtx) Login(login *Login) (*LoginOk, bool)        { return p.OnLogin(login) }
 
 func (p *AuthCtx) GetResTree() []*TreeNode {
 	return BuildTree(p.ResRepo.All())
@@ -99,16 +58,3 @@ func (p *AuthCtx) GetRoleTree() []*TreeNode {
 func (p *AuthCtx) GetUserPage() T {
 	return p.UserRepo.All()
 }
-
-//func (p *AuthCtx) GetUserPage(page *filter.PageFilter) *db.Paging {
-//	lst := []AuthUserLine{}
-
-//	if s := page.Search(); s != "" {
-//		fg := filter.NewOrGroup()
-//		fg.AddRule(filter.Rule{F: "Xm", O: "like", V1: s})
-//		fg.AddRule(filter.Rule{F: "Mc", O: "like", V1: s})
-//		page.AddGroup(fg)
-//	}
-
-//	return p.Orm.Page(&lst, page)
-//}
