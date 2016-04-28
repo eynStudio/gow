@@ -12,10 +12,7 @@ import (
 type User struct {
 	Id         GUID       `bson:"_id"`
 	Mc         string     `Mc`
-	Nc         string     `Nc` //昵称
-	Img        string     `Img`
 	Pwd        string     `Pwd`
-	Xm         string     `Xm`
 	Bz         string     `Bz`
 	Lock       bool       `Lock`
 	CreateTime time.Time  `CreateTime`
@@ -60,7 +57,7 @@ type UserAgg struct {
 }
 
 func (p *UserAgg) RegistedCmds() []Cmd {
-	return []Cmd{&SaveUser{}, &DelUser{}, &SaveUserGroup{}, &DelUserGroup{}, &UpdateUserPwd{}, &UpdateUserNc{}}
+	return []Cmd{&SaveUser{}, &DelUser{}, &SaveUserGroup{}, &DelUserGroup{}, &UpdateUserPwd{}}
 }
 
 func (p *UserAgg) HandleCmd(cmd Cmd) error {
@@ -74,9 +71,9 @@ func (p *UserAgg) HandleCmd(cmd Cmd) error {
 	case *UpdateUserPwd:
 		p.root.Pwd = cmd.Pwd
 		p.ApplyEvent((*UserPwdUpdated)(cmd))
-	case *UpdateUserNc:
-		p.root.Nc = cmd.Nc
-		p.ApplyEvent((*UserNcUpdated)(cmd))
+		//	case *UpdateUserNc:
+		//		p.root.Nc = cmd.Nc
+		//		p.ApplyEvent((*UserNcUpdated)(cmd))
 	case *SaveUserGroup:
 		p.root.AddGroup(cmd.GroupId)
 		p.ApplyEvent((*UserGroupSaved)(cmd))
