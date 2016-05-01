@@ -23,22 +23,14 @@ func NewOrgNode() *OrgNode {
 func (p *OrgNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
-	case "GET":
-		p.Get(c)
-	case "POST":
+	case gweb.POST:
 		p.Post(c)
-	case "PUT":
+	case gweb.PUT:
 		p.Put(c)
-	case "DELETE":
-		c.OK()
 	default:
 		handled = false
 	}
 	c.Handled = handled
-}
-
-func (p *OrgNode) Get(c *gweb.Ctx) {
-
 }
 
 func (p *OrgNode) Post(c *gweb.Ctx) {
@@ -57,5 +49,4 @@ func (p *OrgNode) Put(c *gweb.Ctx) {
 	if err := cmdbus.Exec(&m); err != nil {
 		fmt.Errorf("%#v", err)
 	}
-
 }

@@ -23,22 +23,14 @@ func NewUserNode() *UserNode {
 func (p *UserNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
-	case "GET":
-		p.Get(c)
-	case "POST":
+	case gweb.POST:
 		p.Post(c)
-	case "PUT":
+	case gweb.PUT:
 		p.Put(c)
-	case "DELETE":
-		c.OK()
 	default:
 		handled = false
 	}
 	c.Handled = handled
-}
-
-func (p *UserNode) Get(c *gweb.Ctx) {
-
 }
 
 func (p *UserNode) Post(c *gweb.Ctx) {

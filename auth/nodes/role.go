@@ -23,21 +23,14 @@ func NewRoleNode() *RoleNode {
 func (p *RoleNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
-	case "GET":
-		p.Get(c)
-	case "POST":
+	case gweb.POST:
 		p.Post(c)
-	case "PUT":
+	case gweb.PUT:
 		p.Put(c)
-	case "DELETE":
-		c.OK()
 	default:
 		handled = false
 	}
 	c.Handled = handled
-}
-
-func (p *RoleNode) Get(c *gweb.Ctx) {
 }
 
 func (p *RoleNode) Post(c *gweb.Ctx) {

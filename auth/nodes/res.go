@@ -3,6 +3,7 @@ package nodes
 import (
 	"fmt"
 
+	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
 	"github.com/eynstudio/gow/auth/res"
@@ -23,21 +24,16 @@ func NewResNode() *ResNode {
 func (p *ResNode) Handle(c *gweb.Ctx) {
 	handled := true
 	switch c.Method {
-	case "GET":
-		p.Get(c)
-	case "POST":
+	case gweb.POST:
 		p.Post(c)
-	case "PUT":
+	case gweb.PUT:
 		p.Put(c)
-	case "DELETE":
-		c.OK()
+	case gweb.DEL:
+		p.Del(c)
 	default:
 		handled = false
 	}
 	c.Handled = handled
-}
-
-func (p *ResNode) Get(c *gweb.Ctx) {
 }
 
 func (p *ResNode) Post(c *gweb.Ctx) {
@@ -56,5 +52,12 @@ func (p *ResNode) Put(c *gweb.Ctx) {
 	if err := cmdbus.Exec(&m); err != nil {
 		fmt.Errorf("%#v", err)
 	}
+}
 
+func (p *ResNode) Del(c *gweb.Ctx) {
+	var m res.DelRes
+	m.Id = GUID(c.Get("id"))
+	if err := cmdbus.Exec(&m); err != nil {
+		fmt.Errorf("%#v", err)
+	}
 }

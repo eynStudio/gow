@@ -1,8 +1,6 @@
 package res
 
 import (
-	"fmt"
-
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/dddd/ddd"
 )
@@ -59,31 +57,16 @@ func (p *ResAgg) HandleCmd(cmd Cmd) error {
 	switch cmd := cmd.(type) {
 	case *SaveRes:
 		p.root = Res(*cmd)
-		p.ApplyEvent((*ResSaved)(cmd))
+		p.StoreEvent((*ResSaved)(cmd))
 	case *DelRes:
-		p.root = Res{}
-		p.ApplyEvent((*ResDeleted)(cmd))
+		p.SetDeleted()
+		p.StoreEvent((*ResDeleted)(cmd))
 	case *SaveResOpt:
 		p.root.ReplaceOpt(cmd.Opt)
-		p.ApplyEvent((*ResOptSaved)(cmd))
+		p.StoreEvent((*ResOptSaved)(cmd))
 	case *DelResOpt:
 		p.root.DelOpt(cmd.OptId)
-		p.ApplyEvent((*ResOptDeleted)(cmd))
-	default:
-		fmt.Println("ResAgg HandleCmd: no handler")
+		p.StoreEvent((*ResOptDeleted)(cmd))
 	}
 	return nil
-}
-
-func (p *ResAgg) ApplyEvent(event Event) {
-	switch event.(type) {
-	case *ResSaved:
-	case *ResDeleted:
-	case *ResOptSaved:
-	case *ResOptDeleted:
-	default:
-		fmt.Println("ResAgg ApplyEvent: no handler")
-	}
-
-	p.StoreEvent(event)
 }
