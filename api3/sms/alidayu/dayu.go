@@ -2,6 +2,7 @@ package alidayu
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -28,9 +29,9 @@ var (
 	AppSecret     string
 )
 
-func SendSMS(rec_num, sms_free_sign_name, sms_template_code, sms_param string) (err error) {
+func SendSMS(rec_num, sms_free_sign_name, sms_template_code, sms_param string) (result DayuResp, err error) {
 	if rec_num == "" || sms_free_sign_name == "" || sms_template_code == "" {
-		return ErrParameters
+		return result, ErrParameters
 	}
 
 	m := getCommonCfg()
@@ -43,9 +44,9 @@ func SendSMS(rec_num, sms_free_sign_name, sms_template_code, sms_param string) (
 	return post(m)
 }
 
-func post(m M) (err error) {
+func post(m M) (result DayuResp, err error) {
 	if AppKey == "" || AppSecret == "" {
-		return ErrRequired
+		return result, ErrRequired
 	}
 
 	signedData := getSignedData(m)
@@ -58,16 +59,12 @@ func post(m M) (err error) {
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	data, _ := ioutil.ReadAll(resp.Body)
-	response := string(data)
-	if strings.Contains(response, "success") {
-		return nil
-	} else {
-		return errors.New(response)
-	}
+	err = json.Unmarshal(data, &result)
+	return
 }
 
 func getCommonCfg() (m M) {
