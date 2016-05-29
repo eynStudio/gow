@@ -1,11 +1,8 @@
 package nodes
 
 import (
-	"fmt"
-
-	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
-	"github.com/eynstudio/gow/auth/role"
+	"github.com/eynstudio/gow/auth/models"
 	"github.com/eynstudio/gweb"
 )
 
@@ -37,15 +34,13 @@ func (p *RoleNode) Post(c *gweb.Ctx) {
 	if c.JMethod() == "List" {
 		c.Json(p.GetRoleTree())
 	} else if c.Scope.HasKey("id") {
-		c.Json(p.RoleRepo.Get(c.Get("id")))
+		c.Json(p.IRoleRepo.Get(c.Get("id")))
 	} else {
-		c.Json(&role.Role{Id: p.RoleRepo.NewId(), Res: []role.Permission{}})
+		c.Json(&models.Role{Id: p.IRoleRepo.NewId(), Res: []models.Permission{}})
 	}
 }
 func (p *RoleNode) Put(c *gweb.Ctx) {
-	var m role.SaveRole
+	var m models.Role
 	c.Req.JsonBody(&m)
-	if err := cmdbus.Exec(&m); err != nil {
-		fmt.Errorf("%#v", err)
-	}
+	p.SaveRole(m)
 }

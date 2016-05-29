@@ -1,41 +1,34 @@
 package auth
 
 import (
-	"github.com/eynstudio/gow/auth/org"
-	"github.com/eynstudio/gow/auth/res"
-	"github.com/eynstudio/gow/auth/role"
-	"github.com/eynstudio/gow/auth/user"
-
 	. "github.com/eynstudio/gobreak"
-	"github.com/eynstudio/gobreak/dddd"
 	"github.com/eynstudio/gobreak/di"
+	"github.com/eynstudio/gow/auth/domains"
+	. "github.com/eynstudio/gow/auth/models"
+	"github.com/eynstudio/gow/auth/repo"
 )
 
 func Init() {
 	repoRes := NewResRepo()
-	di.Map(repoRes).Apply(repoRes.MgoRepo)
-	dddd.Reg(&res.ResAgg{}, repoRes)
+	di.MapAs(repoRes, (*repo.IResRepo)(nil)).Apply(repoRes.MgoRepo)
 
 	repoRole := NewRoleRepo()
-	di.Map(repoRole).Apply(repoRole.MgoRepo)
-	dddd.Reg(&role.RoleAgg{}, repoRole)
+	di.MapAs(repoRole, (*repo.IRoleRepo)(nil)).Apply(repoRole.MgoRepo)
 
 	repoOrg := NewOrgRepo()
-	di.Map(repoOrg).Apply(repoOrg.MgoRepo)
-	dddd.Reg(&org.OrgAgg{}, repoOrg)
+	di.MapAs(repoOrg, (*repo.IOrgRepo)(nil)).Apply(repoOrg.MgoRepo)
 
 	repoUser := NewUserRepo()
-	di.Map(repoUser).Apply(repoUser.MgoRepo)
-	dddd.Reg(&user.UserAgg{}, repoUser)
+	di.MapAs(repoUser, (*repo.IUserRepo)(nil)).Apply(repoUser.MgoRepo)
 
 	di.ApplyAndMap(&AuthCtx{})
 }
 
 type AuthCtx struct {
-	*ResRepo       `di`
-	*OrgRepo       `di`
-	*RoleRepo      `di`
-	*UserRepo      `di`
+	repo.IResRepo  `di`
+	repo.IOrgRepo  `di`
+	repo.IRoleRepo `di`
+	repo.IUserRepo `di`
 	OnLogin        func(login *Login) (*LoginOk, bool)
 	OnLoginByToken func(token string) (*LoginOk, bool)
 }
@@ -44,17 +37,55 @@ func (p *AuthCtx) LoginByToken(token string) (*LoginOk, bool) { return p.OnLogin
 func (p *AuthCtx) Login(login *Login) (*LoginOk, bool)        { return p.OnLogin(login) }
 
 func (p *AuthCtx) GetResTree() []*TreeNode {
-	return BuildTree(p.ResRepo.All())
+	return BuildTree(p.IResRepo.All())
 }
 
 func (p *AuthCtx) GetOrgTree() []*TreeNode {
-	return BuildTree(p.OrgRepo.All())
+	return BuildTree(p.IOrgRepo.All())
 }
 
 func (p *AuthCtx) GetRoleTree() []*TreeNode {
-	return BuildTree(p.RoleRepo.All())
+	return BuildTree(p.IRoleRepo.All())
 }
 
 func (p *AuthCtx) GetUserPage() T {
-	return p.UserRepo.All()
+	return p.IUserRepo.All()
+}
+
+func (p *AuthCtx) SaveOrg(m Org) {
+	p.IOrgRepo.Save(m.Id, m)
+}
+
+func (p *AuthCtx) SaveRes(m Res) {
+	p.IResRepo.Save(m.Id, m)
+}
+func (p *AuthCtx) SaveRole(m Role) {
+	p.IRoleRepo.Save(m.Id, m)
+}
+func (p *AuthCtx) SaveUser(m User) {
+	p.IUserRepo.Save(m.Id, m)
+}
+
+func (p *AuthCtx) GetRes(id GUID) (m *domains.ResAgg) {
+	m = domains.NewResAgg(id)
+	return
+}
+
+func (p *AuthCtx) GetRole(id GUID) (m *domains.RoleAgg) {
+	m = domains.NewRoleAgg(id)
+	return
+}
+
+func (p *AuthCtx) GetOrg(id GUID) (m *domains.OrgAgg) {
+	m = domains.NewOrgAgg(id)
+	return
+}
+
+func (p *AuthCtx) GetUser(id GUID) (m *domains.UserAgg) {
+	m = domains.NewUserAgg(id)
+	return
+}
+
+func (p *AuthCtx) GetNcImg(id GUID) (nc string, img string) {
+	return domains.NewUserAgg(id).GetNcImg()
 }

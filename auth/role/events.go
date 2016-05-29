@@ -1,14 +1,14 @@
 package role
 
-import (
-	. "github.com/eynstudio/gobreak"
-	. "github.com/eynstudio/gobreak/ddd"
-)
+//import (
+//	. "github.com/eynstudio/gobreak"
+//	. "github.com/eynstudio/gobreak/ddd"
+//)
 
-type RoleSaved Role
+//type RoleSaved Role
 
-func (p *RoleSaved) ID() GUID { return p.Id }
+//func (p *RoleSaved) ID() GUID { return p.Id }
 
-type RoleDeleted IdEvent
+//type RoleDeleted IdEvent
 
-func (p *RoleDeleted) ID() GUID { return p.Id }
+//func (p *RoleDeleted) ID() GUID { return p.Id }

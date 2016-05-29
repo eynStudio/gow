@@ -1,35 +1,35 @@
 package user
 
-import (
-	. "github.com/eynstudio/gobreak"
-	. "github.com/eynstudio/gobreak/ddd"
-)
+//import (
+//	. "github.com/eynstudio/gobreak"
+//	. "github.com/eynstudio/gobreak/ddd"
+//)
 
-type UserSaved User
+//type UserSaved User
 
-func (p *UserSaved) ID() GUID { return p.Id }
+//func (p *UserSaved) ID() GUID { return p.Id }
 
-type UserDeleted IdEvent
+//type UserDeleted IdEvent
 
-func (p *UserDeleted) ID() GUID { return p.Id }
+//func (p *UserDeleted) ID() GUID { return p.Id }
 
-type UserGroupSaved struct {
-	Id      GUID
-	GroupId GUID
-}
+//type UserGroupSaved struct {
+//	Id      GUID
+//	GroupId GUID
+//}
 
-func (p *UserGroupSaved) ID() GUID { return p.Id }
+//func (p *UserGroupSaved) ID() GUID { return p.Id }
 
-type UserGroupDeleted UserGroupSaved
+//type UserGroupDeleted UserGroupSaved
 
-func (p *UserGroupDeleted) ID() GUID { return p.Id }
+//func (p *UserGroupDeleted) ID() GUID { return p.Id }
 
-type UserPwdUpdated struct {
-	Id  GUID
-	Pwd string
-}
+//type UserPwdUpdated struct {
+//	Id  GUID
+//	Pwd string
+//}
 
-func (p *UserPwdUpdated) ID() GUID { return p.Id }
+//func (p *UserPwdUpdated) ID() GUID { return p.Id }
 
 //type UserNcUpdated struct {
 //	Id GUID

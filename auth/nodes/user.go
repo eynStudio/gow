@@ -1,11 +1,8 @@
 package nodes
 
 import (
-	"fmt"
-
-	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
-	"github.com/eynstudio/gow/auth/user"
+	"github.com/eynstudio/gow/auth/models"
 	"github.com/eynstudio/gweb"
 )
 
@@ -37,16 +34,14 @@ func (p *UserNode) Post(c *gweb.Ctx) {
 	if c.JMethod() == "List" {
 		c.Json(p.GetUserPage())
 	} else if c.Scope.HasKey("id") {
-		c.Json(p.UserRepo.Get(c.Get("id")))
+		//		c.Json(p.UserRepo.Get(c.Get("id")))
 	} else {
-		c.Json(&user.User{Id: p.UserRepo.NewId()})
+		c.Json(&models.User{Id: p.IUserRepo.NewId()})
 	}
 }
 
 func (p *UserNode) Put(c *gweb.Ctx) {
-	var m user.SaveUser
+	var m models.User
 	c.Req.JsonBody(&m)
-	if err := cmdbus.Exec(&m); err != nil {
-		fmt.Errorf("%#v", err)
-	}
+	p.SaveUser(m)
 }

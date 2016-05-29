@@ -1,15 +1,18 @@
 package auth
 
 import (
-	. "github.com/eynstudio/gow/auth/user"
-
 	"github.com/eynstudio/gobreak/db"
 	"github.com/eynstudio/gobreak/db/filter"
+	. "github.com/eynstudio/gow/auth/models"
 
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
+	"github.com/eynstudio/gow/auth/models"
+	"github.com/eynstudio/gow/auth/repo"
 	"gopkg.in/mgo.v2/bson"
 )
+
+var _ repo.IUserRepo = new(UserRepo)
 
 type UserRepo struct {
 	MgoRepo
@@ -19,9 +22,13 @@ func NewUserRepo() *UserRepo {
 	return &UserRepo{NewMgoRepo("AuthUser", func() T { return &User{} })}
 }
 
-func (p *UserRepo) GetById(id GUID) (u User, ok bool) {
-	p.GetAs(id, &u)
-	return u, u.Id != ""
+func (p *UserRepo) GetById(id GUID) (m *models.User, err error) {
+	m = new(models.User)
+	p.GetAs(id, &m)
+	if m.Id == "" {
+		err = db.DbNotFound
+	}
+	return
 }
 
 func (p *UserRepo) HasUserByMc(mc string) (has bool, err error) {
@@ -32,16 +39,18 @@ func (p *UserRepo) HasUserByMc(mc string) (has bool, err error) {
 	return n > 0, err
 }
 
-func (p *UserRepo) GetUserByMc(mc string) (u User, ok bool) {
+func (p *UserRepo) GetUserByMc(mc string) (u *User, ok bool) {
 	sess := p.CopySession()
 	defer sess.Close()
-	err := p.C(sess).Find(bson.M{"Mc": mc}).One(&u)
+	u = new(User)
+	err := p.C(sess).Find(bson.M{"Mc": mc}).One(u)
 	return u, err == nil
 }
 
-func (p *UserRepo) GetUser(name, pwd string) (u User, ok bool) {
+func (p *UserRepo) GetUserByMcPwd(name, pwd string) (u *User, ok bool) {
 	sess := p.CopySession()
 	defer sess.Close()
+	u = new(User)
 	err := p.C(sess).Find(bson.M{"Mc": name, "Pwd": pwd}).One(&u)
 	return u, err == nil
 }
@@ -71,4 +80,8 @@ func (p *UserRepo) AddGroup(uid, gid GUID) {
 }
 func (p *UserRepo) DelGroup(uid, gid GUID) {
 	p.Save(uid, bson.M{"$pull": bson.M{"Groups": gid}})
+}
+
+func (p *UserRepo) UpdateNc(uid GUID, nc string) {
+	p.UpdateSetFiled(uid, "Nc", nc)
 }

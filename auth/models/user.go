@@ -20,6 +20,7 @@ type User struct {
 	Auths   []UserAuth `Auths`
 	Groups  []GUID     `Groups`
 	Roles   []GUID     `Roles`
+	Ext     M          `Ext`
 }
 
 func (p *User) AddGroup(gid GUID) {

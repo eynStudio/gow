@@ -1,28 +1,28 @@
 package org
 
-import (
-	. "github.com/eynstudio/gobreak"
-	. "github.com/eynstudio/gobreak/ddd"
-)
+//import (
+//	. "github.com/eynstudio/gobreak"
+//	. "github.com/eynstudio/gobreak/ddd"
+//)
 
-type SaveOrg Org
+//type SaveOrg Org
 
-func (p *SaveOrg) ID() GUID { return p.Id }
+//func (p *SaveOrg) ID() GUID { return p.Id }
 
-type DelOrg IdCmd
+//type DelOrg IdCmd
 
-func (p *DelOrg) ID() GUID { return p.Id }
+//func (p *DelOrg) ID() GUID { return p.Id }
 
-type SaveOrgGroup struct {
-	Id    GUID
-	Group Group
-}
+//type SaveOrgGroup struct {
+//	Id    GUID
+//	Group Group
+//}
 
-func (p *SaveOrgGroup) ID() GUID { return p.Id }
+//func (p *SaveOrgGroup) ID() GUID { return p.Id }
 
-type DelOrgGroup struct {
-	Id      GUID
-	GroupId GUID
-}
+//type DelOrgGroup struct {
+//	Id      GUID
+//	GroupId GUID
+//}
 
-func (p *DelOrgGroup) ID() GUID { return p.Id }
+//func (p *DelOrgGroup) ID() GUID { return p.Id }

@@ -1,12 +1,14 @@
 package auth
 
 import (
-	. "github.com/eynstudio/gow/auth/org"
-	"gopkg.in/mgo.v2/bson"
-
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
+	. "github.com/eynstudio/gow/auth/models"
+	"github.com/eynstudio/gow/auth/repo"
+	"gopkg.in/mgo.v2/bson"
 )
+
+var _ repo.IOrgRepo = new(OrgRepo)
 
 type OrgRepo struct {
 	MgoRepo

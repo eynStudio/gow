@@ -1,12 +1,9 @@
 package nodes
 
 import (
-	"fmt"
-
 	. "github.com/eynstudio/gobreak"
-	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
-	"github.com/eynstudio/gow/auth/res"
+	"github.com/eynstudio/gow/auth/models"
 	"github.com/eynstudio/gweb"
 )
 
@@ -40,24 +37,19 @@ func (p *ResNode) Post(c *gweb.Ctx) {
 	if c.JMethod() == "List" {
 		c.Json(p.GetResTree())
 	} else if c.Scope.HasKey("id") {
-		c.Json(p.ResRepo.Get(c.Get("id")))
+		c.Json(p.IResRepo.Get(c.Get("id")))
 	} else {
-		c.Json(&res.Res{Id: p.ResRepo.NewId()})
+		c.Json(&models.Res{Id: p.IResRepo.NewId()})
 	}
 }
 
 func (p *ResNode) Put(c *gweb.Ctx) {
-	var m res.SaveRes
+	var m models.Res
 	c.Req.JsonBody(&m)
-	if err := cmdbus.Exec(&m); err != nil {
-		fmt.Errorf("%#v", err)
-	}
+	p.SaveRes(m)
 }
 
 func (p *ResNode) Del(c *gweb.Ctx) {
-	var m res.DelRes
-	m.Id = GUID(c.Get("id"))
-	if err := cmdbus.Exec(&m); err != nil {
-		fmt.Errorf("%#v", err)
-	}
+	var id = GUID(c.Get("id"))
+	p.IResRepo.Del(id)
 }

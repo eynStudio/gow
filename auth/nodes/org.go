@@ -1,11 +1,8 @@
 package nodes
 
 import (
-	"fmt"
-
-	"github.com/eynstudio/gobreak/dddd/cmdbus"
 	"github.com/eynstudio/gow/auth"
-	"github.com/eynstudio/gow/auth/org"
+	"github.com/eynstudio/gow/auth/models"
 	"github.com/eynstudio/gweb"
 )
 
@@ -37,16 +34,14 @@ func (p *OrgNode) Post(c *gweb.Ctx) {
 	if c.JMethod() == "List" {
 		c.Json(p.GetOrgTree())
 	} else if c.Scope.HasKey("id") {
-		c.Json(p.OrgRepo.Get(c.Get("id")))
+		c.Json(p.IOrgRepo.Get(c.Get("id")))
 	} else {
-		c.Json(&org.Org{Id: p.OrgRepo.NewId()})
+		c.Json(&models.Org{Id: p.IOrgRepo.NewId()})
 	}
 }
 
 func (p *OrgNode) Put(c *gweb.Ctx) {
-	var m org.SaveOrg
+	var m models.Org
 	c.Req.JsonBody(&m)
-	if err := cmdbus.Exec(&m); err != nil {
-		fmt.Errorf("%#v", err)
-	}
+	p.SaveOrg(m)
 }
