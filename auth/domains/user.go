@@ -7,8 +7,8 @@ import (
 )
 
 type UserAgg struct {
-	r  repo.IUserRepo `di`
-	id GUID
+	id   GUID
+	Reop repo.IUserRepo `di`
 	Error
 }
 
@@ -19,12 +19,12 @@ func NewUserAgg(id GUID) (m *UserAgg) {
 }
 
 func (p *UserAgg) UpdateNc(nc string) {
-	p.r.UpdateNc(p.id, nc)
+	p.Reop.UpdateNc(p.id, nc)
 }
 
 //Get 昵称+头像
 func (p *UserAgg) GetNcImg() (nc string, img string) {
-	u, _ := p.r.GetById(p.id)
+	u, _ := p.Reop.GetById(p.id)
 	if u.Nc == "" {
 		return u.Mc, u.Img
 	}
