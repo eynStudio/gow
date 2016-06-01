@@ -7,23 +7,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func NewRegistedEventHandler(handler RegistedEventsHandler) RegistedEventsHandler {
-	di.Root.Apply(handler)
-	return handler
-}
-
 func Init(domainRepo DomainRepo, aggCmdHandler AggCmdHandler, eventBus EventBus) {
 	repoCate := NewCateRepo()
 	di.Root.Map(repoCate).Apply(repoCate.MgoRepo)
-	domainRepo.RegisterAggregate(&CateAgg{}, NewCateAgg)
-	aggCmdHandler.SetAggregate(&CateAgg{})
 
 	repoInfo := NewInfoRepo()
 	di.Root.Map(repoInfo).Apply(repoInfo.MgoRepo)
-	domainRepo.RegisterAggregate(&InfoAgg{}, NewInfoAgg)
-	aggCmdHandler.SetAggregate(&InfoAgg{})
 
-	eventBus.AddHandler(NewRegistedEventHandler(&CmsEventHandler{}))
 	di.Root.ApplyAndMap(&CmsCtx{})
 }
 
