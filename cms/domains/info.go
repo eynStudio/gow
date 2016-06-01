@@ -3,10 +3,12 @@ package domains
 import (
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/di"
+	"github.com/eynstudio/gow/cms/repo"
 )
 
 type InfoAgg struct {
-	id GUID
+	repo.IInfoRepo `di`
+	id             GUID
 	Error
 }
 

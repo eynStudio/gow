@@ -4,28 +4,29 @@ import (
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/ddd"
 	"github.com/eynstudio/gobreak/di"
+	"github.com/eynstudio/gow/cms/repo"
 	"gopkg.in/mgo.v2/bson"
 )
 
 func Init(domainRepo DomainRepo, aggCmdHandler AggCmdHandler, eventBus EventBus) {
 	repoCate := NewCateRepo()
-	di.Root.Map(repoCate).Apply(repoCate.MgoRepo)
+	di.MapAs(repoCate, (*repo.ICateRepo)(nil)).Apply(repoCate.MgoRepo)
 
 	repoInfo := NewInfoRepo()
-	di.Root.Map(repoInfo).Apply(repoInfo.MgoRepo)
+	di.MapAs(repoInfo, (*repo.IInfoRepo)(nil)).Apply(repoInfo.MgoRepo)
 
 	di.Root.ApplyAndMap(&CmsCtx{})
 }
 
 type CmsCtx struct {
-	*CateRepo `di`
-	*InfoRepo `di`
+	repo.ICateRepo `di`
+	repo.IInfoRepo `di`
 }
 
 func (p *CmsCtx) GetCateTree() []*TreeNode {
-	return BuildTree(p.CateRepo.All())
+	return BuildTree(p.ICateRepo.All())
 }
 
 func (p *CmsCtx) GetInfos(cid GUID) []T {
-	return p.InfoRepo.Find(bson.M{"Cates": cid})
+	return p.IInfoRepo.Find(bson.M{"Cates": cid})
 }

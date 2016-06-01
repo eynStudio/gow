@@ -3,10 +3,12 @@ package domains
 import (
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/di"
+	"github.com/eynstudio/gow/cms/repo"
 )
 
 type CateAgg struct {
-	id GUID
+	repo.ICateRepo `di`
+	id             GUID
 	Error
 }
 

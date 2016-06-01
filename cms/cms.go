@@ -4,7 +4,11 @@ import (
 	. "github.com/eynstudio/gobreak"
 	. "github.com/eynstudio/gobreak/db/mgo"
 	. "github.com/eynstudio/gow/cms/models"
+	"github.com/eynstudio/gow/cms/repo"
 )
+
+var _ repo.ICateRepo = new(CateRepo)
+var _ repo.IInfoRepo = new(InfoRepo)
 
 type CateRepo struct {
 	MgoRepo
