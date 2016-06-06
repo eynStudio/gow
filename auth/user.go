@@ -31,7 +31,7 @@ func (p *UserRepo) GetById(id GUID) (m *models.User, err error) {
 	return
 }
 
-func (p *UserRepo) HasUserByMc(mc string) (has bool, err error) {
+func (p *UserRepo) HasUserMc(mc string) (has bool, err error) {
 	sess := p.CopySession()
 	defer sess.Close()
 	var n int
