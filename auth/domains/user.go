@@ -18,8 +18,20 @@ func NewUserAgg(id GUID) (m *UserAgg) {
 	return m
 }
 
-func (p *UserAgg) UpdateNc(nc string) {
-	p.Reop.UpdateNc(p.id, nc)
+func (p *UserAgg) UpdateNc(nc string)   { p.Reop.UpdateNc(p.id, nc) }
+func (p *UserAgg) UpdatePwd(pwd string) { p.Reop.UpdatePwd(p.id, pwd) }
+func (p *UserAgg) UpdateImg(img string) { p.Reop.UpdateImg(p.id, img) }
+func (p *UserAgg) CheckThenUpdatePwd(pwd0, pwd1 string) {
+	has, err := p.Reop.CheckPwd(p.id, pwd0)
+	if err != nil {
+		p.Err = err
+		return
+	}
+	if !has {
+		p.SetErr("原密码错误")
+		return
+	}
+	p.Reop.UpdatePwd(p.id, pwd1)
 }
 
 //Get 昵称+头像

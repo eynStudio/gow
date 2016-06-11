@@ -9,6 +9,7 @@ import (
 	. "github.com/eynstudio/gobreak/db/mgo"
 	"github.com/eynstudio/gow/auth/models"
 	"github.com/eynstudio/gow/auth/repo"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -38,7 +39,13 @@ func (p *UserRepo) HasUserMc(mc string) (has bool, err error) {
 	n, err = p.C(sess).Find(bson.M{"Mc": mc}).Count()
 	return n > 0, err
 }
-
+func (p *UserRepo) CheckPwd(id GUID, pwd string) (has bool, err error) {
+	var n int
+	p.Sess(func(c *mgo.Collection) {
+		n, err = c.Find(bson.M{"_id": id, "Pwd": pwd}).Count()
+	})
+	return n > 0, err
+}
 func (p *UserRepo) GetUserByMc(mc string) (u *User, ok bool) {
 	sess := p.CopySession()
 	defer sess.Close()
@@ -82,6 +89,6 @@ func (p *UserRepo) DelGroup(uid, gid GUID) {
 	p.Save(uid, bson.M{"$pull": bson.M{"Groups": gid}})
 }
 
-func (p *UserRepo) UpdateNc(uid GUID, nc string) {
-	p.UpdateSetFiled(uid, "Nc", nc)
-}
+func (p *UserRepo) UpdateNc(uid GUID, nc string)   { p.UpdateSetFiled(uid, "Nc", nc) }
+func (p *UserRepo) UpdatePwd(uid GUID, pwd string) { p.UpdateSetFiled(uid, "Pwd", pwd) }
+func (p *UserRepo) UpdateImg(uid GUID, img string) { p.UpdateSetFiled(uid, "Img", img) }

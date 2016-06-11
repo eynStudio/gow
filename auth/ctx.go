@@ -87,5 +87,14 @@ func (p *AuthCtx) GetUser(id GUID) (m *domains.UserAgg) {
 }
 
 func (p *AuthCtx) GetNcImg(id GUID) (nc string, img string) {
-	return domains.NewUserAgg(id).GetNcImg()
+	return p.GetUser(id).GetNcImg()
+}
+
+func (p *AuthCtx) CheckThenUpdatePwd(id GUID, pwd0, pwd1 string) Status {
+	u := p.GetUser(id)
+	u.CheckThenUpdatePwd(SaltPwd(pwd0), SaltPwd(pwd1))
+	if u.NotErr() {
+		return OkStatus
+	}
+	return u.GetStatus()
 }
