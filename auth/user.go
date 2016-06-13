@@ -92,3 +92,4 @@ func (p *UserRepo) DelGroup(uid, gid GUID) {
 func (p *UserRepo) UpdateNc(uid GUID, nc string)   { p.UpdateSetFiled(uid, "Nc", nc) }
 func (p *UserRepo) UpdatePwd(uid GUID, pwd string) { p.UpdateSetFiled(uid, "Pwd", pwd) }
 func (p *UserRepo) UpdateImg(uid GUID, img string) { p.UpdateSetFiled(uid, "Img", img) }
+func (p *UserRepo) UpdateMc(uid GUID, mc string)   { p.UpdateSetFiled(uid, "Mc", mc) }

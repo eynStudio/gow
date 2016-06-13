@@ -12,6 +12,7 @@ type IUserRepo interface {
 	UpdateNc(uid GUID, nc string)
 	UpdateImg(uid GUID, img string)
 	UpdatePwd(uid GUID, pwd string)
+	UpdateMc(uid GUID, mc string)
 	GetUserByMcPwd(mc, pwd string) (u *models.User, ok bool)
 	GetUserByMc(mc string) (u *models.User, ok bool)
 	HasUserMc(mc string) (has bool, err error)
