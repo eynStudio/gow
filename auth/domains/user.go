@@ -21,6 +21,8 @@ func NewUserAgg(id GUID) (m *UserAgg) {
 func (p *UserAgg) UpdateNc(nc string)   { p.Reop.UpdateNc(p.id, nc) }
 func (p *UserAgg) UpdatePwd(pwd string) { p.Reop.UpdatePwd(p.id, pwd) }
 func (p *UserAgg) UpdateImg(img string) { p.Reop.UpdateImg(p.id, img) }
+func (p *UserAgg) Lock()                { p.Reop.UpdateLock(p.id, true) }
+func (p *UserAgg) Unlock()              { p.Reop.UpdateLock(p.id, false) }
 func (p *UserAgg) CheckThenUpdatePwd(pwd0, pwd1 string) {
 	has, err := p.Reop.CheckPwd(p.id, pwd0)
 	if err != nil {

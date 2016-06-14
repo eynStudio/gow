@@ -93,3 +93,4 @@ func (p *UserRepo) UpdateNc(uid GUID, nc string)   { p.UpdateSetFiled(uid, "Nc",
 func (p *UserRepo) UpdatePwd(uid GUID, pwd string) { p.UpdateSetFiled(uid, "Pwd", pwd) }
 func (p *UserRepo) UpdateImg(uid GUID, img string) { p.UpdateSetFiled(uid, "Img", img) }
 func (p *UserRepo) UpdateMc(uid GUID, mc string)   { p.UpdateSetFiled(uid, "Mc", mc) }
+func (p *UserRepo) UpdateLock(uid GUID, lock bool) { p.UpdateSetFiled(uid, "Lock", lock) }
