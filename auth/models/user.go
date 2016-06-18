@@ -23,6 +23,12 @@ type User struct {
 	Ext     M          `Ext`
 }
 
+//按Xm，Nc，Mc顺序查找第一个非空返回
+func (p User) GetXmNcMc() string { return IfThenStr(p.Xm != "", p.Xm, p.GetNcMc()) }
+
+//按Nc，Mc顺序查找第一个非空返回
+func (p User) GetNcMc() string { return IfThenStr(p.Nc == "", p.Mc, p.Nc) }
+
 func (p *User) AddGroup(gid GUID) {
 	if -1 == Slice(&p.Groups).FindEntityIndex(gid) {
 		p.Groups = append(p.Groups, gid)
