@@ -19,3 +19,8 @@ type LoginOk struct {
 type LoginErr struct {
 	Err string
 }
+
+type ChangePwd struct {
+	Pwd0 string
+	Pwd1 string
+}
