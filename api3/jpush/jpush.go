@@ -88,6 +88,11 @@ func (p *JPush) SetNotification(alert string, android *AndroidNotice, ios *IOSNo
 	return p
 }
 
+func (p *JPush) SetAllNotice(alert string, ext M) *JPush {
+	p.Notification = NewNotice(alert, ext)
+	return p
+}
+
 func (p *JPush) SetMessage(content, title, content_type string, extras M) *JPush {
 	p.Message = &Message{Content: content, Title: title, ContentType: content_type, Extras: extras}
 	return p

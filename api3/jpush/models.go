@@ -9,6 +9,13 @@ type Notice struct {
 	WINPhone *WinPhoneNotice `json:"winphone,omitempty"`
 }
 
+func NewNotice(alert string, ext M) *Notice {
+	a := &AndroidNotice{Alert: alert, Extras: ext}
+	b := &IOSNotice{Alert: alert, Extras: ext}
+	c := &WinPhoneNotice{Alert: alert, Extras: ext}
+	return &Notice{Alert: "", Android: a, IOS: b, WINPhone: c}
+}
+
 type AndroidNotice struct {
 	Alert     string `json:"alert"`
 	Title     string `json:"title,omitempty"`
