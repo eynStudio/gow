@@ -1,7 +1,6 @@
 package wx
 
 import (
-	"encoding/xml"
 	"log"
 
 	. "github.com/eynstudio/gobreak"
@@ -13,7 +12,6 @@ type prePay struct {
 }
 
 func (p *prePay) Do(body, tradeNo, ip string, fee int) (payid string, err error) {
-	var respBytes []byte
 	var data string
 
 	r := NewUnifyOrderReq(body, tradeNo, ip, fee)
@@ -21,20 +19,18 @@ func (p *prePay) Do(body, tradeNo, ip string, fee int) (payid string, err error)
 		return
 	}
 	log.Println(data)
-	respBytes, p.Err = http.PostWiHeader(unifiedorder, data, M{
-		"Accept":       "application/xml",
-		"Content-Type": "application/xml;charset=utf-8"})
 
-	log.Println(string(respBytes))
 	xmlResp := UnifyOrderResp{}
-	if p.Err = xml.Unmarshal(respBytes, &xmlResp); p.IsErr() {
-		return
-	}
+	http.Post(unifiedorder, data, "").Header(M{
+		"Accept":       "application/xml",
+		"Content-Type": "application/xml;charset=utf-8"}).GetXml(&xmlResp)
 
-	if xmlResp.Return_code == "FAIL" {
-		p.SetErr(xmlResp.Return_msg)
-		return
-	}
+	p.NoErrExec(func() {
+		if xmlResp.Return_code == "FAIL" {
+			p.SetErr(xmlResp.Return_msg)
+		}
+	})
+
 	p.LogErr()
 	return xmlResp.Prepay_id, p.Err
 }
