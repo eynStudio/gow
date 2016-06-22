@@ -31,11 +31,11 @@ func Send(push *JPush) (err error)     { return send(JPUSH_URL, push) }
 func SendTest(push *JPush) (err error) { return send(JPUSH_VALIDATE, push) }
 
 func send(url string, push *JPush) (err error) {
-	data, err := http.PostJsonWiHeader(url, push, M{"Authorization": auth})
-	if err != nil {
-		return err
+	h := http.PostJsonWiHeader(url, push, M{"Authorization": auth})
+	str := h.GetStr()
+	if h.IsErr() {
+		return h.Err
 	}
-	str := string(data)
 	if strings.Contains(str, "msg_id") {
 		return nil
 	}
@@ -54,22 +54,27 @@ func NewJPush() *JPush           { return &JPush{} }
 func (p *JPush) Send() error     { return Send(p) }
 func (p *JPush) SendTest() error { return SendTest(p) }
 
-func (p *JPush) SetPlatform(all, android, ios, winphone bool) *JPush {
-	if all {
-		p.Platform = "all"
+func (p *JPush) setApnsProduction(v bool) *JPush {
+	if p.Options == nil {
 		p.Options = &Option{}
-		p.Options.ApnsProduction = false
-		return p
 	}
+	p.Options.ApnsProduction = v
+	return p
+}
 
+func (p *JPush) SetPlatformAll() *JPush {
+	p.Platform = "all"
+	return p.setApnsProduction(false)
+}
+
+func (p *JPush) SetPlatform(android, ios, winphone bool) *JPush {
 	lst := make([]string, 0)
 	if android {
 		lst = append(lst, "android")
 	}
 	if ios {
 		lst = append(lst, "ios")
-		p.Options = &Option{}
-		p.Options.ApnsProduction = false
+		p.setApnsProduction(false)
 	}
 	if winphone {
 		lst = append(lst, "winphone")
@@ -88,12 +93,11 @@ func (p *JPush) SetMessage(content, title, content_type string, extras M) *JPush
 	return p
 }
 
-func (p *JPush) SetAudience(all bool, tag, tag_and, alias, id []string) *JPush {
-	if all {
-		p.Audience = "all"
-		return p
-	}
-
+func (p *JPush) SetAudienceAll() *JPush {
+	p.Audience = "all"
+	return p
+}
+func (p *JPush) SetAudience(tag, tag_and, alias, id []string) *JPush {
 	m := make(map[string][]string, 0)
 	set := func(k string, v []string) {
 		if v != nil {
