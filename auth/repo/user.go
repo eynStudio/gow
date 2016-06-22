@@ -14,8 +14,8 @@ type IUserRepo interface {
 	UpdatePwd(uid GUID, pwd string)
 	UpdateMc(uid GUID, mc string)
 	UpdateLock(uid GUID, lock bool)
-	GetUserByMcPwd(mc, pwd string) (u *models.User, ok bool)
-	GetUserByMc(mc string) (u *models.User, ok bool)
+	GetUserByMcPwd(mc, pwd string) (u *models.User,err error)
+	GetUserByMc(mc string) (u *models.User,err error)
 	 HasUserMc(mc string) (has bool)
 	CheckPwd(id GUID, pwd string) (has bool, err error)
 }

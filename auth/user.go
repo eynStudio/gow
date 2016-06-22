@@ -42,32 +42,25 @@ func (p *UserRepo) HasUserMc(mc string) (has bool) {
 }
 func (p *UserRepo) CheckPwd(id GUID, pwd string) (has bool, err error) {
 	var n int
-	p.Sess(func(c *mgo.Collection) {
-		n, err = c.Find(bson.M{"_id": id, "Pwd": pwd}).Count()
-	})
+	p.Sess(func(c *mgo.Collection) { n, err = c.Find(bson.M{"_id": id, "Pwd": pwd}).Count() })
 	return n > 0, err
 }
-func (p *UserRepo) GetUserByMc(mc string) (u *User, ok bool) {
-	sess := p.CopySession()
-	defer sess.Close()
-	u = new(User)
-	err := p.C(sess).Find(bson.M{"Mc": mc}).One(u)
-	return u, err == nil
+func (p *UserRepo) GetUserByMc(mc string) (u *User, err error) {
+	return p.findUser(bson.M{"Mc": mc})
 }
 
-func (p *UserRepo) GetUserByMcPwd(name, pwd string) (u *User, ok bool) {
-	sess := p.CopySession()
-	defer sess.Close()
-	u = new(User)
-	err := p.C(sess).Find(bson.M{"Mc": name, "Pwd": pwd}).One(&u)
-	return u, err == nil
+func (p *UserRepo) GetUserByMcPwd(name, pwd string) (u *User, err error) {
+	return p.findUser(bson.M{"Mc": name, "Pwd": pwd})
 }
 
-func (p *UserRepo) GetUserByLx(name, lx string) (u User, ok bool) {
-	sess := p.CopySession()
-	defer sess.Close()
-	err := p.C(sess).Find(bson.M{"Auth": bson.M{"Mc": name, "Lx": lx}}).One(&u)
-	return u, err == nil
+func (p *UserRepo) GetUserByLx(name, lx string) (u *User, err error) {
+	return p.findUser(bson.M{"Auth": bson.M{"Mc": name, "Lx": lx}})
+}
+
+func (p *UserRepo) findUser(query bson.M) (u *User, err error) {
+	u = new(User)
+	p.Sess(func(c *mgo.Collection) { err = c.Find(query).One(u) })
+	return u, err
 }
 
 func (p *UserRepo) ByGroup(gid GUID, pf *filter.PageFilter) (pager db.Paging) {
