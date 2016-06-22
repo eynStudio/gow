@@ -32,12 +32,13 @@ func (p *UserRepo) GetById(id GUID) (m *models.User, err error) {
 	return
 }
 
-func (p *UserRepo) HasUserMc(mc string) (has bool, err error) {
-	sess := p.CopySession()
-	defer sess.Close()
-	var n int
-	n, err = p.C(sess).Find(bson.M{"Mc": mc}).Count()
-	return n > 0, err
+func (p *UserRepo) HasUserMc(mc string) (has bool) {
+	p.Sess(func(c *mgo.Collection) {
+		if c, err := c.Find(bson.M{"Mc": mc}).Count(); err == nil {
+			has = c > 0
+		}
+	})
+	return
 }
 func (p *UserRepo) CheckPwd(id GUID, pwd string) (has bool, err error) {
 	var n int
