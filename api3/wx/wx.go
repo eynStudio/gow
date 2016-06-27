@@ -18,7 +18,7 @@ func Init(appid, mchid, apikey, notifyurl string) {
 	wxNotifyUrl = notifyurl
 }
 
-func PrePay(body, tradeNo, ip string, fee int) (payid string, err error) {
+func PrePay(body, tradeNo, ip string, fee int) (payreq *PayReq, err error) {
 	p := &prePay{}
 	return p.Do(body, tradeNo, ip, fee)
 }

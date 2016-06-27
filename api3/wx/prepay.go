@@ -11,7 +11,7 @@ type prePay struct {
 	Error
 }
 
-func (p *prePay) Do(body, tradeNo, ip string, fee int) (payid string, err error) {
+func (p *prePay) Do(body, tradeNo, ip string, fee int) (payreq *PayReq, err error) {
 	var data string
 
 	r := NewUnifyOrderReq(body, tradeNo, ip, fee)
@@ -32,5 +32,5 @@ func (p *prePay) Do(body, tradeNo, ip string, fee int) (payid string, err error)
 	})
 
 	p.LogErr()
-	return xmlResp.Prepay_id, p.Err
+	return NewPayReq(xmlResp.Prepay_id), p.Err
 }
