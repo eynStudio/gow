@@ -60,6 +60,9 @@ func (p *UserRepo) GetUserByLx(name, lx string) (u *User, err error) {
 func (p *UserRepo) findUser(query bson.M) (u *User, err error) {
 	u = new(User)
 	p.Sess(func(c *mgo.Collection) { err = c.Find(query).One(u) })
+	if err != nil && err == mgo.ErrNotFound {
+		return nil, nil
+	}
 	return u, err
 }
 
