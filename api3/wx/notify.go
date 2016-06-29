@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 var OkNotifyResp = NotifyResp{Return_code: "SUCCESS", Return_msg: "OK"}
@@ -24,6 +25,11 @@ func (p *NotifyResp) Ok() {
 func (p *NotifyResp) Fail(msg string) {
 	p.Return_code = "FAIL"
 	p.Return_msg = msg
+}
+
+func (p *NotifyResp) GetXml() string {
+	bytes, _ := xml.Marshal(p)
+	return strings.Replace(string(bytes), "NotifyResp", "xml", -1)
 }
 
 type NotifyReq struct {

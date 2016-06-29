@@ -21,6 +21,7 @@ type User struct {
 	Groups  []GUID     `Groups`
 	Roles   []GUID     `Roles`
 	Ext     M          `Ext`
+	Lx      int        `Lx`
 }
 
 //按Xm，Nc，Mc顺序查找第一个非空返回

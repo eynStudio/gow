@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -17,4 +20,10 @@ func SaltPwd(pwd string) string {
 		}
 	}
 	return salt + pwd
+}
+
+func Temp(pwd string) string {
+	m5 := md5.New()
+	m5.Write([]byte(pwd))
+	return hex.EncodeToString(m5.Sum(nil))
 }
