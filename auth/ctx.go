@@ -94,6 +94,7 @@ func (p *AuthCtx) CheckThenUpdatePwd(id GUID, pwd0, pwd1 string) Status {
 	u := p.GetUser(id)
 	u.CheckThenUpdatePwd(SaltPwd(pwd0), SaltPwd(pwd1))
 	if u.NotErr() {
+
 		return OkStatus
 	}
 	return u.GetStatus()
