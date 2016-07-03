@@ -16,7 +16,10 @@ func SetSalt(s string) { salt = s }
 func SaltPwd(pwd string) string {
 	for i := 0; i < 10; i++ {
 		if k, err := scrypt.Key([]byte(pwd), []byte(salt), 16384, 8, 1, 32); err == nil {
-			return string(k)
+			m5 := md5.New()
+			m5.Write(k)
+			return hex.EncodeToString(m5.Sum(nil))
+			//			return string(k)
 		}
 	}
 	return salt + pwd
