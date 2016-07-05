@@ -2,9 +2,9 @@ package wx
 
 import (
 	"fmt"
-	. "github.com/eynstudio/gobreak"
-	"log"
 	"time"
+
+	. "github.com/eynstudio/gobreak"
 )
 
 type PayReq struct {
@@ -23,9 +23,8 @@ func NewPayReq(preid string) *PayReq {
 	m.Partnerid = wxMchid
 	m.Prepayid = preid
 	m.Package = "Sign=WXPay"
-	m.Noncestr = Uuid4().String()
+	m.Noncestr = Uuid4().String()[:32]
 	m.Timestamp = fmt.Sprint(time.Now().Unix())
-	log.Println(m.Timestamp)
 	mp := m.getSignMap()
 	m.Sign = Sign(mp)
 	return m
