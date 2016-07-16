@@ -8,6 +8,15 @@ import (
 	"github.com/eynstudio/gow/auth/repo"
 )
 
+var authctx IAuthCtx
+
+func init() {
+
+}
+
+type IAuthCtx interface {
+}
+
 func Init() {
 	repoRes := NewResRepo()
 	di.MapAs(repoRes, (*repo.IResRepo)(nil)).Apply(repoRes.MgoRepo)

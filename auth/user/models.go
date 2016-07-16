@@ -4,11 +4,10 @@ import (
 	"time"
 
 	. "github.com/eynstudio/gobreak"
-	. "github.com/satori/go.uuid"
 )
 
 type AuthUser struct {
-	Id      UUID       `Id`
+	Id      GUID       `Id`
 	Mc      string     `Mc` //名称，用户名
 	Pwd     string     `Pwd`
 	Xm      string     `Xm`    //姓名
@@ -20,16 +19,16 @@ type AuthUser struct {
 	Created time.Time  `Created`
 	Updated time.Time  `Updated`
 	Auths   []UserAuth `Auths`
-	Groups  []UUID     `Groups`
-	Roles   []UUID     `Roles`
+	Groups  []GUID     `Groups`
+	Roles   []GUID     `Roles`
 	Ext     M          `Ext`
 }
 
-func NewUser(id UUID) *AuthUser {
-	return &AuthUser{Id: Uuid1(), Lock: false, Created: time.Now(),
+func NewUser(id GUID) *AuthUser {
+	return &AuthUser{Id: Guid(), Lock: false, Created: time.Now(),
 		Auths:  make([]UserAuth, 0),
-		Groups: make([]UUID, 0),
-		Roles:  make([]UUID, 0),
+		Groups: make([]GUID, 0),
+		Roles:  make([]GUID, 0),
 	}
 }
 
