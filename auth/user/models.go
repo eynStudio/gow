@@ -7,13 +7,13 @@ import (
 )
 
 type AuthUser struct {
-	Id      GUID       `Id`
-	Mc      string     `Mc` //名称，用户名
-	Pwd     string     `Pwd`
-	Xm      string     `Xm`    //姓名
-	Nc      string     `Nc`    //昵称
-	Img     string     `Img`   //头像
-	Phone   string     `Phone` //手机
+	Id  GUID   `Id`
+	Mc  string `Mc` //名称，用户名
+	Pwd string `Pwd`
+	//	Xm      string     `Xm`    //姓名
+	//	Nc      string     `Nc`    //昵称
+	//	Img     string     `Img`   //头像
+	//	Phone   string     `Phone` //手机
 	Bz      string     `Bz`
 	Lock    bool       `Lock`
 	Created time.Time  `Created`
@@ -24,8 +24,8 @@ type AuthUser struct {
 	Ext     M          `Ext`
 }
 
-func NewUser(id GUID) *AuthUser {
-	return &AuthUser{Id: Guid(), Lock: false, Created: time.Now(),
+func NewUser(mc, pwd string) *AuthUser {
+	return &AuthUser{Id: Guid(), Lock: false, Created: time.Now(), Mc: mc, Pwd: pwd,
 		Auths:  make([]UserAuth, 0),
 		Groups: make([]GUID, 0),
 		Roles:  make([]GUID, 0),
@@ -38,5 +38,5 @@ type UserAuth struct {
 }
 
 func (p *AuthUser) AddAuth(mc, lx string) {
-	p.Auths = append(p.Auths, UserAuth{mc, lx})
+	p.Auths = append(p.Auths, UserAuth{Mc: mc, Lx: lx})
 }

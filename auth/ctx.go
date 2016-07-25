@@ -15,6 +15,7 @@ func init() {
 }
 
 type IAuthCtx interface {
+	Hi()
 }
 
 func Init() {
