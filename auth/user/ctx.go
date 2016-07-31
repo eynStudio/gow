@@ -3,14 +3,14 @@ package user
 import (
 	"log"
 
-	"github.com/eynstudio/gobreak/di2"
 	"github.com/eynstudio/gobreak/orm"
+	"github.com/eynstudio/gox/di"
 )
 
 var ctx *userCtx = &userCtx{}
 
 func init() {
-	di2.Reg(ctx)
+	di.Reg(ctx)
 }
 
 type userCtx struct {
