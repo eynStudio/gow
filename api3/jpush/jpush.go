@@ -64,7 +64,7 @@ func (p *JPush) setApnsProduction(v bool) *JPush {
 
 func (p *JPush) SetPlatformAll() *JPush {
 	p.Platform = "all"
-	return p.setApnsProduction(false)
+	return p.setApnsProduction(true)
 }
 
 func (p *JPush) SetPlatform(android, ios, winphone bool) *JPush {
@@ -74,7 +74,7 @@ func (p *JPush) SetPlatform(android, ios, winphone bool) *JPush {
 	}
 	if ios {
 		lst = append(lst, "ios")
-		p.setApnsProduction(false)
+		p.setApnsProduction(true)
 	}
 	if winphone {
 		lst = append(lst, "winphone")
