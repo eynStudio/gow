@@ -13,6 +13,7 @@ type AuthRes struct {
 	Opts []Opt
 }
 
+func NewRes() *AuthRes          { return &AuthRes{Id: Guid()} }
 func (p AuthRes) GetMc() string { return p.Mc }
 func (p AuthRes) GetNs() string { return p.Ns }
 func (p AuthRes) GetQz() int    { return p.Qz }
