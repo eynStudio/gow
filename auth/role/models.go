@@ -7,15 +7,17 @@ import (
 type AuthRole struct {
 	Id  GUID
 	Mc  string
-	Uri string
+	Ns  string
 	Bz  string
 	Qz  int
 	Res []Permission
 }
 
-func (p AuthRole) GetMc() string  { return p.Mc }
-func (p AuthRole) GetUri() string { return p.Uri }
-func (p AuthRole) GetQz() int     { return p.Qz }
+func NewRole() *AuthRole { return &AuthRole{Id: Guid()} }
+
+func (p AuthRole) GetMc() string { return p.Mc }
+func (p AuthRole) GetNs() string { return p.Ns }
+func (p AuthRole) GetQz() int    { return p.Qz }
 
 type Permission struct {
 	ResId GUID
