@@ -43,3 +43,11 @@ func (p *ResCtx) Save(m *AuthRes) gobreak.IStatus {
 	}
 	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
 }
+
+func (p *ResCtx) Del(id gobreak.GUID) gobreak.IStatus {
+	err := p.Orm.DelId(&AuthRes{}, id)
+	if err != nil {
+		log.Println(err)
+	}
+	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
+}

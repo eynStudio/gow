@@ -5,16 +5,17 @@ import . "github.com/eynstudio/gobreak"
 type AuthOrg struct {
 	Id     GUID
 	Mc     string
-	Dm     string
-	Uri    string
+	Bz     string
+	Ns     string
 	Qz     int
 	Groups []Group
 	Params
 }
 
-func (p AuthOrg) GetMc() string  { return p.Mc }
-func (p AuthOrg) GetUri() string { return p.Uri }
-func (p AuthOrg) GetQz() int     { return p.Qz }
+func NewOrg() *AuthOrg          { return &AuthOrg{Id: Guid()} }
+func (p AuthOrg) GetMc() string { return p.Mc }
+func (p AuthOrg) GetNs() string { return p.Ns }
+func (p AuthOrg) GetQz() int    { return p.Qz }
 
 func (p *AuthOrg) ReplaceGroup(group Entity)   { Slice(&p.Groups).ReplaceEntity(group) }
 func (p *AuthOrg) GetGroup(groupId GUID) Group { return Slice(&p.Groups).FindEntity(groupId).(Group) }

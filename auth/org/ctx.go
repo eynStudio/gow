@@ -1,4 +1,4 @@
-package role
+package org
 
 import (
 	"log"
@@ -10,31 +10,31 @@ import (
 )
 
 func init() {
-	log.Println(di.Reg(&RoleCtx{}))
+	log.Println(di.Reg(&OrgCtx{}))
 }
 
-type RoleCtx struct {
+type OrgCtx struct {
 	*orm.Orm `di:"*"`
 }
 
-func (p *RoleCtx) Get(id gobreak.GUID) (m AuthRole, ok bool) {
+func (p *OrgCtx) Get(id gobreak.GUID) (m AuthOrg, ok bool) {
 	ok = p.Orm.WhereId(id).GetJson2(&m)
 	return
 }
 
-func (p *RoleCtx) All() (lst []AuthRole, err error) {
+func (p *OrgCtx) All() (lst []AuthOrg, err error) {
 	err = p.Orm.AllJson(&lst)
 	return
 }
-func (p *RoleCtx) AllAsTree() (tree interface{}, err error) {
-	var lst []AuthRole
+func (p *OrgCtx) AllAsTree() (tree interface{}, err error) {
+	lst := make([]AuthOrg, 0)
 	if err = p.Orm.AllJson(&lst); err != nil {
 		return nil, err
 	}
 	return utils.BuildTree(lst), nil
 }
 
-func (p *RoleCtx) Save(m *AuthRole) gobreak.IStatus {
+func (p *OrgCtx) Save(m *AuthOrg) gobreak.IStatus {
 	err := p.Orm.SaveJson(m.Id, m)
 	if err != nil {
 		log.Println(err)
@@ -42,8 +42,8 @@ func (p *RoleCtx) Save(m *AuthRole) gobreak.IStatus {
 	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
 }
 
-func (p *RoleCtx) Del(id gobreak.GUID) gobreak.IStatus {
-	err := p.Orm.DelId(&AuthRole{}, id)
+func (p *OrgCtx) Del(id gobreak.GUID) gobreak.IStatus {
+	err := p.Orm.DelId(&AuthOrg{}, id)
 	if err != nil {
 		log.Println(err)
 	}
