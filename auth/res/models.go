@@ -9,7 +9,7 @@ type AuthRes struct {
 	Qz   int
 	Icon string
 	Ns   string
-	Args []KeyValue
+	Args Params
 	Opts []Opt
 }
 
@@ -29,5 +29,5 @@ type Opt struct {
 	Qz   int
 	View bool
 	Act  string
-	Args []KeyValue
+	Args Params
 }
