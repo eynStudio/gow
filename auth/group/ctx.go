@@ -34,18 +34,18 @@ func (p *GroupCtx) All(orgid gobreak.GUID) (lst []AuthGroup, err error) {
 //	return utils.BuildTree(lst), nil
 //}
 
-//func (p *GroupCtx) Save(m *AuthOrg) gobreak.IStatus {
-//	err := p.Orm.SaveJson(m.Id, m)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
-//}
+func (p *GroupCtx) Save(m *AuthGroup) gobreak.IStatus {
+	err := p.Orm.SaveJson(m.Id, m)
+	if err != nil {
+		log.Println(err)
+	}
+	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
+}
 
-//func (p *GroupCtx) Del(id gobreak.GUID) gobreak.IStatus {
-//	err := p.Orm.DelId(&AuthOrg{}, id)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
-//}
+func (p *GroupCtx) Del(id gobreak.GUID) gobreak.IStatus {
+	err := p.Orm.DelId(&AuthGroup{}, id)
+	if err != nil {
+		log.Println(err)
+	}
+	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
+}
