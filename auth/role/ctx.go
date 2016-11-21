@@ -26,7 +26,7 @@ func (p *RoleCtx) All() (lst []AuthRole, err error) {
 	err = p.Orm.AllJson(&lst)
 	return
 }
-func (p *RoleCtx) AllAsTree() (tree interface{}, err error) {
+func (p *RoleCtx) AllAsTree() (tree utils.TreeNodes, err error) {
 	var lst []AuthRole
 	if err = p.Orm.AllJson(&lst); err != nil {
 		return nil, err
