@@ -2,10 +2,16 @@ package auth
 
 import (
 	"github.com/eynstudio/gow/auth/group"
+	"github.com/eynstudio/gow/auth/role"
 	"github.com/eynstudio/gox/utils"
 )
 
 type GroupRoles struct {
 	Group group.AuthGroup
 	Roles utils.TreeNodes
+}
+
+type RoleRes struct {
+	Role role.AuthRole
+	Res  utils.TreeNodes
 }

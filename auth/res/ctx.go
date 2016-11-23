@@ -28,7 +28,7 @@ func (p *ResCtx) All() (lst []AuthRes, err error) {
 	err = p.Orm.AllJson(&lst)
 	return
 }
-func (p *ResCtx) AllAsTree() (tree interface{}, err error) {
+func (p *ResCtx) AllAsTree() (tree utils.TreeNodes, err error) {
 	var lst []AuthRes
 	if err = p.Orm.AllJson(&lst); err != nil {
 		return nil, err
