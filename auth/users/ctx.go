@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/eynstudio/gobreak"
+	"github.com/eynstudio/gobreak/db"
+	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gobreak/orm"
 	"github.com/eynstudio/gox/di"
 )
@@ -23,6 +25,23 @@ func (p *UserCtx) Get(id gobreak.GUID) (m AuthUser, ok bool) {
 
 func (p *UserCtx) All() (lst []AuthUser, err error) {
 	err = p.Orm.AllJson(&lst)
+	return
+}
+
+func (p *UserCtx) PageUser(page *filter.PageFilter) (m db.Paging, err error) {
+	sql := `select id ,json->>mc Mc,json->lx, json->>nc from auth_user`
+	if page.Search() != "" {
+		s := "%" + page.Search() + "%"
+		w := `(json->>mc like '` + s + `' or json->>nc like '` + s + `')`
+		sql += " where " + w
+		m.Total = p.Orm.Where(w).From("AuthUser").Count(nil)
+	} else {
+		m.Total, _ = p.Orm.Count(&AuthUser{})
+	}
+
+	lst := []UserLine{}
+	err = p.Orm.Query(&lst, sql, page.Skip(), page.PerPage())
+	m.Items = lst
 	return
 }
 
