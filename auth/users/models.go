@@ -59,5 +59,4 @@ type UserLine struct {
 	Id GUID
 	Mc string
 	Nc string
-	Lx int
 }

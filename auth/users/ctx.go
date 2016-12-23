@@ -31,20 +31,17 @@ func (p *UserCtx) All() (lst []AuthUser, err error) {
 	return
 }
 
-func (p *UserCtx) PageUser(page *filter.PageFilter) (m db.Paging, err error) {
-	sql := `select id ,json->>mc Mc,json->lx, json->>nc from auth_user`
-	if page.Search() != "" {
-		s := "%" + page.Search() + "%"
-		w := `(json->>mc like '` + s + `' or json->>nc like '` + s + `')`
-		sql += " where " + w
-		m.Total = p.Orm.Where(w).From("AuthUser").Count(nil)
-	} else {
-		m.Total, _ = p.Orm.Count(&AuthUser{})
-	}
+func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
 
 	lst := []UserLine{}
-	err = p.Orm.Query(&lst, sql, page.Skip(), page.PerPage())
-	m.Items = lst
+
+	s := p.Orm.From("AuthUser")
+	if page.Search() != "" {
+		str := "%" + page.Search() + "%"
+		s.Where(`json->>'Mc' like ? or json->>'Nc' like ?`, str, str)
+	}
+	m = s.Select(`id ,json->>'Mc' mc,json->>'Nc' nc`).Page2(&lst, page)
+	err = s.Err
 	return
 }
 
