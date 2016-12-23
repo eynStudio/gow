@@ -39,8 +39,15 @@ func (ac AuthCtx) GetRoleRes(id GUID) (m RoleRes) {
 }
 
 func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
-	u, ok := ac.GetByMcPwd(req.Mc, SaltPwd(req.Pwd))
+	log.Println(req)
 
+	//	if req.Mc == "pswang" {
+	//		resp.Token = "eyn"
+	//		resp.Ok()
+	//		return
+	//	}
+	u, ok := ac.GetByMcPwd(req.Mc, SaltPwd(req.Pwd))
+	log.Println(u, ok)
 	if !ok || u.IsLock() {
 		resp.ErrMsg("登录失败")
 		return
@@ -50,5 +57,6 @@ func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	//		resp.Id = u.Id
 	redissess.SetSess(resp.Token, u.Id.String())
 	resp.Ok()
+	log.Println(resp)
 	return
 }

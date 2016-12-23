@@ -23,7 +23,7 @@ func (p *UserCtx) Get(id gobreak.GUID) (m AuthUser, ok bool) {
 	return
 }
 func (p *UserCtx) GetByMcPwd(mc, pwd string) (m AuthUser, ok bool) {
-	ok = p.Orm.Where(`json->>'mc'=? and json->>'pwd'=?`, mc, pwd).GetJson2(&m)
+	ok = p.Orm.Where(`json->>'Mc'=? and json->>'Pwd'=?`, mc, pwd).GetJson2(&m)
 	return
 }
 func (p *UserCtx) All() (lst []AuthUser, err error) {
@@ -32,9 +32,7 @@ func (p *UserCtx) All() (lst []AuthUser, err error) {
 }
 
 func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
-
 	lst := []UserLine{}
-
 	s := p.Orm.From("AuthUser")
 	if page.Search() != "" {
 		str := "%" + page.Search() + "%"
