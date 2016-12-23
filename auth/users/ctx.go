@@ -22,7 +22,10 @@ func (p *UserCtx) Get(id gobreak.GUID) (m AuthUser, ok bool) {
 	ok = p.Orm.WhereId(id).GetJson2(&m)
 	return
 }
-
+func (p *UserCtx) GetByMcPwd(mc, pwd string) (m AuthUser, ok bool) {
+	ok = p.Orm.Where(`json->>'mc'=? and json->>'pwd'=?`, mc, pwd).GetJson2(&m)
+	return
+}
 func (p *UserCtx) All() (lst []AuthUser, err error) {
 	err = p.Orm.AllJson(&lst)
 	return

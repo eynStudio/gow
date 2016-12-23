@@ -6,19 +6,32 @@ import (
 	. "github.com/eynstudio/gobreak"
 )
 
+var PtrAuthUser = &AuthUser{}
+
+// UserZt 状态：0正常，1锁定
+type UserZt int
+
+const (
+	UserZtZc UserZt = 0
+	UserZtSd UserZt = 1
+)
+
 type AuthUser struct {
 	Id      GUID
 	Mc      string
 	Nc      string
 	Pwd     string
 	Bz      string
-	Zt      int //状态：0正常，1锁定，2存档，-1删除
+	Zt      UserZt
 	Img     string
 	Created time.Time
 	Updated time.Time
 	Auth    []UserAuth
 	Groups  []GUID
 }
+
+// IsLock 是否锁定
+func (au AuthUser) IsLock() bool { return au.Zt == UserZtSd }
 
 func (p *AuthUser) AddGroup(gid GUID) {
 	if -1 == Slice(&p.Groups).FindEntityIndex(gid) {

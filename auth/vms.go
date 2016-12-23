@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gow/auth/group"
 	"github.com/eynstudio/gow/auth/role"
 	"github.com/eynstudio/gox/utils"
@@ -14,4 +15,15 @@ type GroupRoles struct {
 type RoleRes struct {
 	Role role.AuthRole
 	Res  utils.TreeNodes
+}
+
+type LoginReq struct {
+	Mc  string
+	Pwd string
+	Lx  string
+}
+
+type LoginResp struct {
+	Token string
+	gobreak.Status
 }
