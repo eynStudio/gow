@@ -30,7 +30,11 @@ func (p *UserCtx) All() (lst []AuthUser, err error) {
 	err = p.Orm.AllJson(&lst)
 	return
 }
-
+func (p *UserCtx) UserCountByGroup(gid gobreak.GUID) (n int) {
+	//p.Orm.Where(`json->'Groups'@>[]`)
+	//	err = p.Orm.AllJson(&lst)
+	return
+}
 func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
 	lst := []UserLine{}
 	s := p.Orm.From("AuthUser")

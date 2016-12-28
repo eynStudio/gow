@@ -27,3 +27,8 @@ type LoginResp struct {
 	Token string
 	gobreak.Status
 }
+
+type GroupItem struct {
+	group.AuthGroup
+	Users int
+}

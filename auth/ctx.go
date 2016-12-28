@@ -38,6 +38,15 @@ func (ac AuthCtx) GetRoleRes(id GUID) (m RoleRes) {
 	return
 }
 
+func (ac AuthCtx) GetOrgGroup(oid GUID) (m []GroupItem) {
+	lst, _ := ac.GroupCtx.All(oid)
+	for _, it := range lst {
+		v := GroupItem{AuthGroup: it, Users: ac.UserCountByGroup(it.Id)}
+		m = append(m, v)
+	}
+	return
+}
+
 func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	log.Println(req)
 
