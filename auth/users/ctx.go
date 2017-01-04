@@ -1,6 +1,7 @@
 package users
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/eynstudio/gobreak"
@@ -45,6 +46,42 @@ func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
 	m = s.Select(`id ,json->>'Mc' mc,json->>'Nc' nc`).Page2(&lst, page)
 	err = s.Err
 	return
+}
+
+func (p *UserCtx) PageGroupUser(gid gobreak.GUID, page *filter.PageFilter) (m *db.Paging, err error) {
+	lst := []UserLine{}
+	s := p.Orm.From("AuthUser")
+	args := db.NewAgrs(`json->'Groups' @> ?`, gid)
+	if page.Search() != "" {
+		str := "%" + page.Search() + "%"
+		args.Append(`and (json->>'Mc' like ? or json->>'Nc' like ?)`, str, str)
+	}
+	m = s.Where(args.Sql, args.Args...).Select(`id ,json->>'Mc' mc,json->>'Nc' nc`).PageJson2(&lst, page)
+	err = s.Err
+	return
+}
+
+func (p *UserCtx) PageGroupUserSelect(gid gobreak.GUID, page *filter.PageFilter) (m *db.Paging, err error) {
+	log.Println(gid, page)
+
+	lst0 := []gobreak.GUID{gid}
+	lst2, _ := json.Marshal(lst0)
+
+	lst := []UserLine{}
+	s := p.Orm.From("AuthUser")
+	args := db.NewAgrs(`not json->'Groups' @> ?`, lst2)
+	if page.Search() != "" {
+		str := "%" + page.Search() + "%"
+		args.Append(`and (json->>'Mc' like ? or json->>'Nc' like ?)`, str, str)
+	}
+	m = s.Where(args.Sql, args.Args...).Select(`id, json->>'Mc' mc,json->>'Nc' nc`).Page2(&lst, page)
+	err = s.Err
+	return
+}
+
+func (p *UserCtx) AddUserGroup(uid, gid gobreak.GUID) error {
+	log.Println(uid, gid)
+	return nil
 }
 
 func (p *UserCtx) Save(m *AuthUser) gobreak.IStatus {
