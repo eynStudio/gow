@@ -69,3 +69,23 @@ func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	log.Println(resp)
 	return
 }
+
+func (ac AuthCtx) GetUserRes(uid GUID) (lst []res.AuthRes) {
+	sql := `json->'Id' in (
+  SELECT jsonb_array_elements(role.json -> 'Res')->'ResId'
+  FROM auth_role role
+  WHERE role.json->>'Res' is not null  and (role.json -> 'Id' IN (
+    SELECT jsonb_array_elements(g.json -> 'Roles')
+    FROM auth_group g
+    WHERE g.json -> 'Id' <@ (SELECT u.json -> 'Groups'
+                             FROM auth_user u
+                             WHERE id = ?)
+  ))
+) ORDER BY json->'Qz' DESC`
+	err := ac.Orm.Where(sql, uid).AllJson(&lst).Err
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(lst)
+	return lst
+}
