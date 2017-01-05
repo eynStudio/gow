@@ -1,7 +1,6 @@
 package users
 
 import (
-	"encoding/json"
 	"log"
 
 	"github.com/eynstudio/gobreak"
@@ -58,14 +57,9 @@ func (p *UserCtx) PageGroupUserSelect(gid gobreak.GUID, page *filter.PageFilter)
 
 func (p *UserCtx) pageGroupUser(gid gobreak.GUID, page *filter.PageFilter, in bool) (m *db.Paging, err error) {
 	lst := []UserLine{}
-	lst2, _ := json.Marshal(gid)
 	s := p.Orm.From("AuthUser")
-
-	sql := `json->'Groups' @> ?`
-	if !in {
-		sql += "not "
-	}
-	args := db.NewAgrs(sql, lst2)
+	sql := gobreak.IfThenStr(in, "", "not ") + `json->'Groups' @> ?`
+	args := db.NewAgrs(sql, gid.Json())
 	if page.Search() != "" {
 		str := "%" + page.Search() + "%"
 		args.Append(`and (json->>'Mc' like ? or json->>'Nc' like ?)`, str, str)
