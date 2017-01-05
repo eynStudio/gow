@@ -49,27 +49,23 @@ func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
 }
 
 func (p *UserCtx) PageGroupUser(gid gobreak.GUID, page *filter.PageFilter) (m *db.Paging, err error) {
-	lst := []UserLine{}
-	s := p.Orm.From("AuthUser")
-	args := db.NewAgrs(`json->'Groups' @> ?`, gid)
-	if page.Search() != "" {
-		str := "%" + page.Search() + "%"
-		args.Append(`and (json->>'Mc' like ? or json->>'Nc' like ?)`, str, str)
-	}
-	m = s.Where(args.Sql, args.Args...).Select(`id ,json->>'Mc' mc,json->>'Nc' nc`).PageJson2(&lst, page)
-	err = s.Err
-	return
+	return p.pageGroupUser(gid, page, true)
 }
 
 func (p *UserCtx) PageGroupUserSelect(gid gobreak.GUID, page *filter.PageFilter) (m *db.Paging, err error) {
-	log.Println(gid, page)
+	return p.pageGroupUser(gid, page, false)
+}
 
-	lst0 := []gobreak.GUID{gid}
-	lst2, _ := json.Marshal(lst0)
-
+func (p *UserCtx) pageGroupUser(gid gobreak.GUID, page *filter.PageFilter, in bool) (m *db.Paging, err error) {
 	lst := []UserLine{}
+	lst2, _ := json.Marshal(gid)
 	s := p.Orm.From("AuthUser")
-	args := db.NewAgrs(`not json->'Groups' @> ?`, lst2)
+
+	sql := `json->'Groups' @> ?`
+	if !in {
+		sql += "not "
+	}
+	args := db.NewAgrs(sql, lst2)
 	if page.Search() != "" {
 		str := "%" + page.Search() + "%"
 		args.Append(`and (json->>'Mc' like ? or json->>'Nc' like ?)`, str, str)
@@ -81,6 +77,10 @@ func (p *UserCtx) PageGroupUserSelect(gid gobreak.GUID, page *filter.PageFilter)
 
 func (p *UserCtx) AddUserGroup(uid, gid gobreak.GUID) error {
 	log.Println(uid, gid)
+	if u, ok := p.Get(uid); ok {
+		u.AddGroup(gid)
+		return p.Orm.SaveJson(u.Id, u)
+	}
 	return nil
 }
 
