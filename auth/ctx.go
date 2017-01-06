@@ -70,6 +70,13 @@ func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	return
 }
 
+func (ac AuthCtx) GetUserNavs(uid GUID) Navs {
+	lst := ac.GetUserRes(uid)
+	tree := buildNavTree(lst)
+	log.Println(tree)
+	return tree.Navs
+}
+
 func (ac AuthCtx) GetUserRes(uid GUID) (lst []res.AuthRes) {
 	sql := `json->'Id' in (
   SELECT jsonb_array_elements(role.json -> 'Res')->'ResId'
