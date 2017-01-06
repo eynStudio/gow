@@ -20,15 +20,16 @@ type MailClient struct {
 	pwd  string
 }
 
-func (p MailClient) SendWithSll(to []string, subject, msg string) {
+func (p MailClient) SendWithSll(to []string, subject, msg string) error {
 	conn, c, err := p.Conn()
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 	defer conn.Close()
 	s := &sendMail{c: c}
 	s.send(p.user, to, subject, msg)
+	return s.Err
 }
 
 func (p MailClient) Conn() (conn *tls.Conn, c *smtp.Client, err error) {
