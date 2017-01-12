@@ -27,3 +27,8 @@ func (cn *CmsNode) GetCateId1(c *gweb.Ctx) {
 
 	c.Json(cms.NewCate())
 }
+
+func (cn *CmsNode) PutCate(c *gweb.Ctx, m *cms.CmsCate) {
+	m.Uid = c.Uid()
+	c.Json(cn.CmsCtx.SaveCate(m))
+}
