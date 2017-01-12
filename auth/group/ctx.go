@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	log.Println(di.Reg(&GroupCtx{}))
+	gobreak.Must(di.Reg(&GroupCtx{}))
 }
 
 type GroupCtx struct {

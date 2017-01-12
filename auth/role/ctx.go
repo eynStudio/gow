@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	log.Println(di.Reg(&RoleCtx{}))
+	gobreak.Must(di.Reg(&RoleCtx{}))
 }
 
 type RoleCtx struct {

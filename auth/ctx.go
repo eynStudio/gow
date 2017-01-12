@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	log.Println(di.Reg(&AuthCtx{}))
+	Must(di.Reg(&AuthCtx{}))
 }
 
 type AuthCtx struct {

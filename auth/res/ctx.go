@@ -10,9 +10,7 @@ import (
 )
 
 func init() {
-	log.Println("res.init")
-
-	log.Println(di.Reg(&ResCtx{}))
+	gobreak.Must(di.Reg(&ResCtx{}))
 }
 
 type ResCtx struct {

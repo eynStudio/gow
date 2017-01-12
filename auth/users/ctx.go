@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	log.Println(di.Reg(&UserCtx{}))
+	gobreak.Must(di.Reg(&UserCtx{}))
 }
 
 type UserCtx struct {
