@@ -2,11 +2,11 @@ package cms
 
 import (
 	"errors"
+	"log"
 
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/orm"
 	"github.com/eynstudio/gox/di"
-	"github.com/eynstudio/gox/utils"
 )
 
 func init() {
@@ -17,15 +17,31 @@ type CmsCtx struct {
 	*orm.Orm `di:"*"`
 }
 
-func (c *CmsCtx) CateTree() (tree utils.TreeNodes, err error) {
-	var lst []CmsCate
-	if err = c.Orm.AllJson(&lst); err != nil {
-		return nil, err
+func (c *CmsCtx) CateTree() (tree *CateTree, err error) {
+	var lst []CmsInfo
+	s := c.Orm.Order("json->'Ns' desc", "json->'Qz'").AllJson(&lst)
+	if s.IsErr() {
+		return nil, s.Err
 	}
-	return utils.BuildTree(lst), nil
+	for _, it := range lst {
+		log.Println(it.Ns, it.Qz, it.Mc, it.GetUri())
+	}
+	tree = NewCateTree()
+	log.Println(lst)
+	tree.Build(lst)
+	return tree, nil
 }
 
-func (c *CmsCtx) SaveCate(m *CmsCate) error {
+func (c *CmsCtx) GetCate(id GUID) (m CmsInfo) {
+	if id.IsEmpty() {
+		m.Id = Guid()
+		return
+	}
+	c.Orm.WhereId(id).GetJson2(&m)
+	return
+}
+
+func (c *CmsCtx) SaveCate(m *CmsInfo) error {
 	if m.Uid.IsEmpty() {
 		return errors.New("NO UID")
 	}

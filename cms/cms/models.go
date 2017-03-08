@@ -6,7 +6,7 @@ import (
 	. "github.com/eynstudio/gobreak"
 )
 
-type Xx struct {
+type CmsInfo struct {
 	Id     GUID
 	Uid    GUID   //发布者user.id
 	Mc     string //名称，主标题
@@ -28,35 +28,35 @@ type Xx struct {
 	Tags   []string  `json:",omitempty"`
 	Bz     string    `json:",omitempty"` // 备注
 	Ext    M         `json:",omitempty"`
+	Fav    bool
 }
 
-type CmsCate struct {
-	Xx
-}
-
-func NewCate() *CmsCate {
-	return &CmsCate{Xx: Xx{Id: Guid(), Lx: "list"}}
-}
-
-func (p CmsCate) GetMc() string { return p.Mc }
-func (p CmsCate) GetNs() string { return p.Ns }
-func (p CmsCate) GetQz() int    { return p.Qz }
-
-type CmsInfo struct {
-	Xx
+func NewCate() *CmsInfo {
+	return &CmsInfo{Id: Guid(), Lx: "list"}
 }
 
 func NewInfo(uid GUID, cid GUID) *CmsInfo {
 	now := time.Now()
 	return &CmsInfo{
-		Xx: Xx{Id: Guid(),
-			Uid:   uid,
-			Cjsj:  now,
-			Gxsj:  now,
-			Fbsj:  now,
-			Cates: []GUID{cid},
-			Lx:    "page"},
+		Id:    Guid(),
+		Uid:   uid,
+		Cjsj:  now,
+		Gxsj:  now,
+		Fbsj:  now,
+		Cates: []GUID{cid},
+		Lx:    "page",
 	}
+}
+
+func (p CmsInfo) GetMc() string { return p.Mc }
+func (p CmsInfo) GetNs() string { return p.Ns }
+func (p CmsInfo) GetQz() int    { return p.Qz }
+
+func (p CmsInfo) GetUri() string {
+	if p.Ns == "" {
+		return p.Mc
+	}
+	return p.Ns + `\` + p.Mc
 }
 
 type CmsFj struct {

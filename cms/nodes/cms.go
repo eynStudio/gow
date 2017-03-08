@@ -24,11 +24,11 @@ func (cn *CmsNode) GetCate(c *gweb.Ctx) {
 }
 
 func (cn *CmsNode) GetCateId1(c *gweb.Ctx) {
-
-	c.Json(cms.NewCate())
+	id1 := c.Scope.GetGuid("id1")
+	c.Json(cn.CmsCtx.GetCate(id1))
 }
 
-func (cn *CmsNode) PutCate(c *gweb.Ctx, m *cms.CmsCate) {
+func (cn *CmsNode) PutCate(c *gweb.Ctx, m *cms.CmsInfo) {
 	m.Uid = c.Uid()
 	c.Json(cn.CmsCtx.SaveCate(m))
 }
