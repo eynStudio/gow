@@ -2,6 +2,11 @@ package cms
 
 import "github.com/eynstudio/gobreak"
 
+type CateInfo struct {
+	Cate  CmsInfo
+	Items []CmsInfo
+}
+
 type CateNode struct {
 	Id    gobreak.GUID
 	Mc    string
