@@ -17,6 +17,7 @@ func NewRes() *AuthRes          { return &AuthRes{Id: Guid()} }
 func (p AuthRes) GetMc() string { return p.Mc }
 func (p AuthRes) GetNs() string { return p.Ns }
 func (p AuthRes) GetQz() int    { return p.Qz }
+func (p AuthRes) GetId() GUID   { return p.Id }
 
 func (p *AuthRes) ReplaceOpt(opt Entity) { Slice(&p.Opts).ReplaceEntity(opt) }
 func (p *AuthRes) DelOpt(id GUID)        { Slice(&p.Opts).RemoveEntity(id) }

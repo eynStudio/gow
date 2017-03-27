@@ -15,3 +15,4 @@ func NewOrg() *AuthOrg          { return &AuthOrg{Id: Guid()} }
 func (p AuthOrg) GetMc() string { return p.Mc }
 func (p AuthOrg) GetNs() string { return p.Ns }
 func (p AuthOrg) GetQz() int    { return p.Qz }
+func (p AuthOrg) GetId() GUID   { return p.Id }

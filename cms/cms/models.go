@@ -11,6 +11,7 @@ type CmsInfo struct {
 	Uid    GUID   //发布者user.id
 	Mc     string //名称，主标题
 	Qz     int    //权重
+	Ns     string //分类：树展示路径
 	Lx     string //类型？//信息，分类，文件下载，链接，特殊模型（红头文件等）
 	Ljdkfs bool   //链接打开方式，Target :_blank
 	Zt     string //状态？
@@ -21,7 +22,6 @@ type CmsInfo struct {
 	Mc2    string    `json:",omitempty"` //副标题
 	Ztp    string    `json:",omitempty"` //主图片，一般用于展示
 	Fbdw   string    `json:",omitempty"` //发布单位（信息）
-	Ns     string    `json:",omitempty"` //分类：树展示路径
 	Zy     string    `json:",omitempty"` //摘要
 	Fj     []CmsFj   `json:",omitempty"` //附件列表
 	Cates  []GUID    `json:",omitempty"` //分类列表（信息）

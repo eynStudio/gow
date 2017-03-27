@@ -20,7 +20,7 @@ func NewCmsNode() *CmsNode {
 
 func (cn *CmsNode) GetCate(c *gweb.Ctx) {
 	all, _ := cn.CmsCtx.CateTree()
-	c.Json(all)
+	c.Json(all.Nodes)
 }
 
 func (cn *CmsNode) GetCateId1(c *gweb.Ctx) {
