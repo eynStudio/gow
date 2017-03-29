@@ -3,6 +3,7 @@ package cms
 import (
 	"errors"
 	"log"
+	"time"
 
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/orm"
@@ -44,10 +45,31 @@ func (c *CmsCtx) GetCate(id GUID) (m CmsInfo) {
 
 func (c *CmsCtx) GetCateInfo(id GUID) (m CateInfo) {
 	c.Orm.WhereId(id).GetJson2(&m.Cate)
+	s := c.Orm.Where(`json->'Cates' @> '"` + id.String() + `"'`).AllJson(&m.Items)
+	s.LogErr()
 	return
 }
 
 func (c *CmsCtx) SaveCate(m *CmsInfo) error {
+	if m.Uid.IsEmpty() {
+		return errors.New("NO UID")
+	}
+	return c.Orm.SaveJson(m.Id, m)
+}
+
+func (c *CmsCtx) GetInfo(id GUID) (m CmsInfo) {
+	if id.IsEmpty() {
+		m.Id = Guid()
+		m.Lx = "info"
+		m.Fbsj = time.Now()
+		m.Cates = make([]GUID, 0)
+		return
+	}
+	c.Orm.WhereId(id).GetJson2(&m)
+	return
+}
+
+func (c *CmsCtx) SaveInfo(m *CmsInfo) error {
 	if m.Uid.IsEmpty() {
 		return errors.New("NO UID")
 	}

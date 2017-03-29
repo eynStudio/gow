@@ -37,3 +37,12 @@ func (cn *CmsNode) GetCateInfo(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
 	c.Json(cn.CmsCtx.GetCateInfo(id1))
 }
+
+func (cn *CmsNode) GetInfoId1(c *gweb.Ctx) {
+	id1 := c.Scope.GetGuid("id1")
+	c.Json(cn.CmsCtx.GetInfo(id1))
+}
+func (cn *CmsNode) PutInfo(c *gweb.Ctx, m *cms.CmsInfo) {
+	m.Uid = c.Uid()
+	c.Json(cn.CmsCtx.SaveInfo(m))
+}

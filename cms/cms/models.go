@@ -17,14 +17,14 @@ type CmsInfo struct {
 	Zt     string //状态？
 	Cjsj   time.Time
 	Gxsj   time.Time
-	Fbsj   time.Time `json:",omitempty"` //发布时间
-	Nr     string    `json:",omitempty"` //内容
-	Mc2    string    `json:",omitempty"` //副标题
-	Ztp    string    `json:",omitempty"` //主图片，一般用于展示
-	Fbdw   string    `json:",omitempty"` //发布单位（信息）
-	Zy     string    `json:",omitempty"` //摘要
-	Fj     []CmsFj   `json:",omitempty"` //附件列表
-	Cates  []GUID    `json:",omitempty"` //分类列表（信息）
+	Fbsj   time.Time `json:"string,omitempty"` //发布时间
+	Nr     string    `json:",omitempty"`       //内容
+	Mc2    string    `json:",omitempty"`       //副标题
+	Ztp    string    `json:",omitempty"`       //主图片，一般用于展示
+	Fbdw   string    `json:",omitempty"`       //发布单位（信息）
+	Zy     string    `json:",omitempty"`       //摘要
+	Fj     []CmsFj   `json:",omitempty"`       //附件列表
+	Cates  []GUID    `json:",omitempty"`       //分类列表（信息）
 	Tags   []string  `json:",omitempty"`
 	Bz     string    `json:",omitempty"` // 备注
 	Ext    M         `json:",omitempty"`
