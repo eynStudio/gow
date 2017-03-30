@@ -3,11 +3,17 @@ package cms
 import (
 	"errors"
 	"log"
+	"net/http"
 	"time"
 
 	. "github.com/eynstudio/gobreak"
+	"github.com/eynstudio/gobreak/net/io"
 	"github.com/eynstudio/gobreak/orm"
 	"github.com/eynstudio/gox/di"
+)
+
+const (
+	Cate_Cgid = GUID("7cae5572-02ef-11e7-902f-c07cd130ee8a")
 )
 
 func init() {
@@ -62,7 +68,7 @@ func (c *CmsCtx) GetInfo(id GUID) (m CmsInfo) {
 		m.Id = Guid()
 		m.Lx = "info"
 		m.Fbsj = time.Now()
-		m.Cates = make([]GUID, 0)
+		m.Cates = []GUID{Cate_Cgid}
 		return
 	}
 	c.Orm.WhereId(id).GetJson2(&m)
@@ -74,4 +80,10 @@ func (c *CmsCtx) SaveInfo(m *CmsInfo) error {
 		return errors.New("NO UID")
 	}
 	return c.Orm.SaveJson(m.Id, m)
+}
+
+func UploadImg(req *http.Request) io.UrlStatus {
+	saveFile := io.NewSaveYyyyMmFile("./files", Guid().String(), []string{".png", ".jpg", ".jpeg", ".gif", ".bmp"})
+	saveFile.Save(req)
+	return saveFile.GetUrlStatus()
 }
