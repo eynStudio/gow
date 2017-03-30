@@ -46,3 +46,10 @@ func (cn *CmsNode) PutInfo(c *gweb.Ctx, m *cms.CmsInfo) {
 	m.Uid = c.Uid()
 	c.Json(cn.CmsCtx.SaveInfo(m))
 }
+
+func (cn *CmsNode) PostFile(c *gweb.Ctx) {
+	c.Json(cms.UploadFile(c.Request))
+}
+func (cn *CmsNode) PostImg(c *gweb.Ctx) {
+	c.Text(cms.UploadImg(c.Request).Url)
+}

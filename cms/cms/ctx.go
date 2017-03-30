@@ -87,3 +87,11 @@ func UploadImg(req *http.Request) io.UrlStatus {
 	saveFile.Save(req)
 	return saveFile.GetUrlStatus()
 }
+
+func UploadFile(req *http.Request) (m CmsFj) {
+	saveFile := io.NewSaveYyyyMmFile("./files", Guid().String(), nil)
+	saveFile.Save(req)
+	m.Mc = saveFile.GetFileName()
+	m.Url = saveFile.GetUrlStatus().Url
+	return
+}
