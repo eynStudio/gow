@@ -22,3 +22,6 @@ func (n *ZdNode) GetCate(c *gweb.Ctx) {
 	//	all, _ := cn.CmsCtx.CateTree()
 	c.Json(n.ZdCtx.All())
 }
+func (n *ZdNode) GetCateId1(c *gweb.Ctx) {
+	c.Json(n.ZdCtx.GetZd(c.Scope.GetGuid("id1")))
+}

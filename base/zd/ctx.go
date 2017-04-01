@@ -14,8 +14,16 @@ type ZdCtx struct {
 	*orm.Orm `di:"*"`
 }
 
-func (ctx *ZdCtx) All() (lst []XtZd) {
-	ctx.Orm.AllJson(&lst)
+func (c *ZdCtx) All() (lst []XtZd) {
+	c.Orm.AllJson(&lst)
+	return
+}
+
+func (c *ZdCtx) GetZd(id GUID) (m XtZd) {
+	if id.IsEmpty() {
+		return NewXtZd()
+	}
+	c.Orm.WhereId(id).GetJson2(&m)
 	return
 }
 

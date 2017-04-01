@@ -17,6 +17,12 @@ func (p XtZd) GetMc() string  { return p.Mc }
 func (p XtZd) GetUri() string { return p.Uri }
 func (p XtZd) GetQz() int     { return p.Qz }
 
+func NewXtZd() (m XtZd) {
+	m.Id = Guid()
+	m.Items = make([]ZdItem, 0)
+	return
+}
+
 type ZdItem struct {
 	Dm string
 	Mc string
