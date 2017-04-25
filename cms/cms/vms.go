@@ -33,7 +33,11 @@ func (ct *CateTree) Build(all []CmsInfo) {
 		if n.Ns == "" {
 			ct.Nodes = append(ct.Nodes, n)
 		} else {
-			ct.uriMap[n.Ns].Nodes = append(ct.uriMap[n.Ns].Nodes, n)
+			if _, ok := ct.uriMap[n.Ns]; ok {
+				ct.uriMap[n.Ns].Nodes = append(ct.uriMap[n.Ns].Nodes, n)
+			} else {
+				ct.Nodes = append(ct.Nodes, n)
+			}
 		}
 	}
 }

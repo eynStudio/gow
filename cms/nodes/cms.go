@@ -23,6 +23,12 @@ func (cn *CmsNode) GetCate(c *gweb.Ctx) {
 	c.Json(all.Nodes)
 }
 
+func (cn *CmsNode) DelCate(c *gweb.Ctx) {
+	id1 := c.Scope.GetGuid("id1")
+	cn.Orm.WhereId(id1).Del(&cms.CmsInfo{})
+	c.Json(nil)
+}
+
 func (cn *CmsNode) GetCateId1(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
 	c.Json(cn.CmsCtx.GetCate(id1))
