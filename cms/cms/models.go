@@ -11,6 +11,7 @@ type CmsInfo struct {
 	Uid    GUID   //发布者user.id
 	Mc     string //名称，主标题
 	Qz     int    //权重
+	IsCate bool   //是否分类
 	Ns     string //分类：树展示路径
 	Lx     string //类型？//信息，分类，文件下载，链接，特殊模型（红头文件等）
 	Ljdkfs bool   //链接打开方式，Target :_blank

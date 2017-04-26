@@ -1,6 +1,8 @@
 package cms
 
 import (
+	"log"
+
 	"github.com/eynstudio/gow/cms/cms"
 
 	"github.com/eynstudio/gox/di"
@@ -23,8 +25,9 @@ func (cn *CmsNode) GetCate(c *gweb.Ctx) {
 	c.Json(all.Nodes)
 }
 
-func (cn *CmsNode) DelCate(c *gweb.Ctx) {
+func (cn *CmsNode) DeleteCate(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
+	log.Println(id1)
 	cn.Orm.WhereId(id1).Del(&cms.CmsInfo{})
 	c.Json(nil)
 }

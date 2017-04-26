@@ -26,13 +26,9 @@ type CmsCtx struct {
 
 func (c *CmsCtx) CateTree() (tree *CateTree, err error) {
 	var lst []CmsInfo
-	s := c.Orm.Order("json->>'Ns'", "json->'Qz'").AllJson(&lst)
+	s := c.Orm.Where(`json->>'IsCate'='true'`).Order("json->>'Ns'", "json->'Qz' desc").AllJson(&lst)
 	if s.IsErr() {
 		return nil, s.Err
-	}
-	for _, it := range lst {
-		log.Printf("%#v", it)
-		log.Println(it.Ns, it.Qz, it.Mc, it.GetUri())
 	}
 	tree = NewCateTree()
 	log.Println(lst)
@@ -43,6 +39,7 @@ func (c *CmsCtx) CateTree() (tree *CateTree, err error) {
 func (c *CmsCtx) GetCate(id GUID) (m CmsInfo) {
 	if id.IsEmpty() {
 		m.Id = Guid()
+		m.IsCate = true
 		return
 	}
 	c.Orm.WhereId(id).GetJson2(&m)
