@@ -7,6 +7,7 @@ import (
 	"time"
 
 	. "github.com/eynstudio/gobreak"
+	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gobreak/net/io"
 	"github.com/eynstudio/gobreak/orm"
 )
@@ -51,11 +52,11 @@ func (c *CmsCtx) GetCateByUri(ns, mc string) (m CmsInfo) {
 	return
 }
 
-func (c *CmsCtx) GetCateInfo(id GUID) (m CateInfo) {
+func (c *CmsCtx) GetCateInfo(id GUID, f *filter.PageFilter) (m CateInfo) {
 	c.Orm().WhereId(id).GetJson2(&m.Cate)
-	s := c.Orm().Where(`json->'Cates' @> '"` + id.String() + `"'`).AllJson(&m.Items)
-	s.LogErr()
-	return
+	p := c.Orm().Where(`json->'Cates' @> '"`+id.String()+`"'`).PageJson2(&m.Items, f)
+	m.Total = p.Total
+	return m
 }
 
 func (c *CmsCtx) SaveCate(m *CmsInfo) error {

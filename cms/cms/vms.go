@@ -5,6 +5,7 @@ import "github.com/eynstudio/gobreak"
 type CateInfo struct {
 	Cate  CmsInfo
 	Items []CmsInfo
+	Total int
 }
 
 type CateNode struct {

@@ -3,6 +3,7 @@ package cms
 import (
 	"log"
 
+	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gow/cms/cms"
 
 	"github.com/eynstudio/gox/di"
@@ -41,9 +42,9 @@ func (cn *CmsNode) PutCate(c *gweb.Ctx, m *cms.CmsInfo) {
 	c.Json(cms.Ctx.SaveCate(m))
 }
 
-func (cn *CmsNode) GetCateInfo(c *gweb.Ctx) {
+func (cn *CmsNode) PostCateInfo(c *gweb.Ctx, m *filter.PageFilter) {
 	id1 := c.Scope.GetGuid("id1")
-	c.Json(cms.Ctx.GetCateInfo(id1))
+	c.Json(cms.Ctx.GetCateInfo(id1, m))
 }
 
 func (cn *CmsNode) GetInfoId1(c *gweb.Ctx) {
