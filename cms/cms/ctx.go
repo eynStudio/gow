@@ -9,24 +9,24 @@ import (
 	. "github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/net/io"
 	"github.com/eynstudio/gobreak/orm"
-	"github.com/eynstudio/gox/di"
 )
-
-const (
-	Cate_Cgid = GUID("7cae5572-02ef-11e7-902f-c07cd130ee8a")
-)
-
-func init() {
-	Must(di.Reg(&CmsCtx{}))
-}
 
 type CmsCtx struct {
-	*orm.Orm `di:"*"`
+	orm *orm.Orm
+}
+
+func (c *CmsCtx) SetOrm(orm *orm.Orm) { c.orm = orm }
+
+func (c *CmsCtx) Orm() *orm.Orm {
+	if c.orm != nil {
+		return c.orm
+	}
+	return orm.GetOrmByName("gow.cms")
 }
 
 func (c *CmsCtx) CateTree() (tree *CateTree, err error) {
 	var lst []CmsInfo
-	s := c.Orm.Where(`json->>'IsCate'='true'`).Order("json->>'Ns'", "json->'Qz' desc").AllJson(&lst)
+	s := c.Orm().Where(`json->>'IsCate'='true'`).Order("json->>'Ns'", "json->'Qz' desc").AllJson(&lst)
 	if s.IsErr() {
 		return nil, s.Err
 	}
@@ -42,13 +42,13 @@ func (c *CmsCtx) GetCate(id GUID) (m CmsInfo) {
 		m.IsCate = true
 		return
 	}
-	c.Orm.WhereId(id).GetJson2(&m)
+	c.Orm().WhereId(id).GetJson2(&m)
 	return
 }
 
 func (c *CmsCtx) GetCateInfo(id GUID) (m CateInfo) {
-	c.Orm.WhereId(id).GetJson2(&m.Cate)
-	s := c.Orm.Where(`json->'Cates' @> '"` + id.String() + `"'`).AllJson(&m.Items)
+	c.Orm().WhereId(id).GetJson2(&m.Cate)
+	s := c.Orm().Where(`json->'Cates' @> '"` + id.String() + `"'`).AllJson(&m.Items)
 	s.LogErr()
 	return
 }
@@ -57,7 +57,7 @@ func (c *CmsCtx) SaveCate(m *CmsInfo) error {
 	if m.Uid.IsEmpty() {
 		return errors.New("NO UID")
 	}
-	return c.Orm.SaveJson(m.Id, m)
+	return c.Orm().SaveJson(m.Id, m)
 }
 
 func (c *CmsCtx) GetInfo(id GUID) (m CmsInfo) {
@@ -68,7 +68,7 @@ func (c *CmsCtx) GetInfo(id GUID) (m CmsInfo) {
 		m.Cates = []GUID{Cate_Cgid}
 		return
 	}
-	c.Orm.WhereId(id).GetJson2(&m)
+	c.Orm().WhereId(id).GetJson2(&m)
 	return
 }
 
@@ -76,7 +76,7 @@ func (c *CmsCtx) SaveInfo(m *CmsInfo) error {
 	if m.Uid.IsEmpty() {
 		return errors.New("NO UID")
 	}
-	return c.Orm.SaveJson(m.Id, m)
+	return c.Orm().SaveJson(m.Id, m)
 }
 
 func UploadImg(req *http.Request) io.UrlStatus {

@@ -11,7 +11,6 @@ import (
 
 type CmsNode struct {
 	*gweb.Node
-	*cms.CmsCtx `di:"*"`
 }
 
 func NewCmsNode() *CmsNode {
@@ -21,39 +20,39 @@ func NewCmsNode() *CmsNode {
 }
 
 func (cn *CmsNode) GetCate(c *gweb.Ctx) {
-	all, _ := cn.CmsCtx.CateTree()
+	all, _ := cms.Ctx.CateTree()
 	c.Json(all.Nodes)
 }
 
 func (cn *CmsNode) DeleteCate(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
 	log.Println(id1)
-	cn.Orm.WhereId(id1).Del(&cms.CmsInfo{})
+	cms.Ctx.Orm().WhereId(id1).Del(&cms.CmsInfo{})
 	c.Json(nil)
 }
 
 func (cn *CmsNode) GetCateId1(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
-	c.Json(cn.CmsCtx.GetCate(id1))
+	c.Json(cms.Ctx.GetCate(id1))
 }
 
 func (cn *CmsNode) PutCate(c *gweb.Ctx, m *cms.CmsInfo) {
 	m.Uid = c.Uid()
-	c.Json(cn.CmsCtx.SaveCate(m))
+	c.Json(cms.Ctx.SaveCate(m))
 }
 
 func (cn *CmsNode) GetCateInfo(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
-	c.Json(cn.CmsCtx.GetCateInfo(id1))
+	c.Json(cms.Ctx.GetCateInfo(id1))
 }
 
 func (cn *CmsNode) GetInfoId1(c *gweb.Ctx) {
 	id1 := c.Scope.GetGuid("id1")
-	c.Json(cn.CmsCtx.GetInfo(id1))
+	c.Json(cms.Ctx.GetInfo(id1))
 }
 func (cn *CmsNode) PutInfo(c *gweb.Ctx, m *cms.CmsInfo) {
 	m.Uid = c.Uid()
-	c.Json(cn.CmsCtx.SaveInfo(m))
+	c.Json(cms.Ctx.SaveInfo(m))
 }
 
 func (cn *CmsNode) PostFile(c *gweb.Ctx) {
