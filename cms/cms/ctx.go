@@ -46,6 +46,11 @@ func (c *CmsCtx) GetCate(id GUID) (m CmsInfo) {
 	return
 }
 
+func (c *CmsCtx) GetCateByUri(ns, mc string) (m CmsInfo) {
+	c.Orm().Where(`json->>'Ns'=? and json->>'Mc'=?`, ns, mc).GetJson2(&m)
+	return
+}
+
 func (c *CmsCtx) GetCateInfo(id GUID) (m CateInfo) {
 	c.Orm().WhereId(id).GetJson2(&m.Cate)
 	s := c.Orm().Where(`json->'Cates' @> '"` + id.String() + `"'`).AllJson(&m.Items)
@@ -73,6 +78,7 @@ func (c *CmsCtx) GetInfo(id GUID) (m CmsInfo) {
 }
 
 func (c *CmsCtx) SaveInfo(m *CmsInfo) error {
+	log.Println(m)
 	if m.Uid.IsEmpty() {
 		return errors.New("NO UID")
 	}
