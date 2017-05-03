@@ -54,7 +54,7 @@ func (c *CmsCtx) GetCateByUri(ns, mc string) (m CmsInfo) {
 
 func (c *CmsCtx) GetCateInfo(id GUID, f *filter.PageFilter) (m CateInfo) {
 	c.Orm().WhereId(id).GetJson2(&m.Cate)
-	p := c.Orm().Where(`json->'Cates' @> '"`+id.String()+`"'`).PageJson2(&m.Items, f)
+	p := c.Orm().Where(`json->'Cates' @> '"`+id.String()+`"'`).Order(`json->'Fbsj' desc`).PageJson2(&m.Items, f)
 	m.Total = p.Total
 	return m
 }
