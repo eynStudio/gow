@@ -52,6 +52,11 @@ func (c *CmsCtx) GetCateByUri(ns, mc string) (m CmsInfo) {
 	return
 }
 
+func (c *CmsCtx) GetTopCateInfoByUri(ns, mc string, n int) (m []CmsInfo) {
+	c.Orm().Where(`json->>'Ns'=? and json->>'Mc'=?`, ns, mc).GetJson2(&m)
+	return
+}
+
 func (c *CmsCtx) GetCateInfo(id GUID, f *filter.PageFilter) (m CateInfo) {
 	c.Orm().WhereId(id).GetJson2(&m.Cate)
 	p := c.Orm().Where(`json->'Cates' @> '"`+id.String()+`"'`).Order(`json->'Fbsj' desc`).PageJson2(&m.Items, f)
