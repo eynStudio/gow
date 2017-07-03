@@ -8,10 +8,10 @@ import (
 )
 
 type Nav struct {
-	Mc   string
-	To   string
-	Navs `json:",omitempty"`
-	Qz   int
+	Name      string
+	To        string
+	Navs      `json:",omitempty"`
+	SortOrder int
 }
 
 func getTo(str string) string { return "/" + strings.Replace(str, ".", "/", -1) }
@@ -19,7 +19,7 @@ func getTo(str string) string { return "/" + strings.Replace(str, ".", "/", -1) 
 type Navs []*Nav
 
 func buildNavTree(src interface{}) *Nav {
-	root := &Nav{Mc: "", To: "", Navs: make(Navs, 0)}
+	root := &Nav{Name: "", To: "", Navs: make(Navs, 0)}
 	buildNavNodes(src, root, "")
 	return root
 }
@@ -28,7 +28,7 @@ func buildNavNodes(src interface{}, r *Nav, prefix string) {
 	results := queryChildren(src, prefix)
 	for _, it := range results {
 		x := it.(res.AuthRes)
-		child := &Nav{Mc: x.Mc, To: getTo(x.Ns), Qz: x.Qz, Navs: make(Navs, 0)}
+		child := &Nav{Name: x.Name, To: getTo(x.Ns), SortOrder: x.SortOrder, Navs: make(Navs, 0)}
 		r.Navs = append(r.Navs, child)
 		buildNavNodes(src, child, x.Ns+".")
 	}
@@ -40,6 +40,6 @@ func queryChildren(ss interface{}, prefix string) []interface{} {
 		last := strings.TrimPrefix(x.Ns, prefix)
 		return strings.HasPrefix(x.Ns, prefix) && !strings.Contains(last, ".")
 	}).OrderByDescending(func(a interface{}) interface{} {
-		return a.(res.AuthRes).Qz
+		return a.(res.AuthRes).SortOrder
 	}).Results()
 }

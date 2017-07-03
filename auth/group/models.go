@@ -5,8 +5,7 @@ import . "github.com/eynstudio/gobreak"
 type AuthGroup struct {
 	Id    GUID
 	OrgId GUID
-	Mc    string
-	Bz    string
+	Name  string
 	Roles []GUID
 	Args  Params
 }

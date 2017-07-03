@@ -9,20 +9,19 @@ import (
 var PtrAuthUser = &AuthUser{}
 
 // UserZt 状态：0正常，1锁定
-type UserZt int
+type UserStatus int
 
 const (
-	UserZtZc UserZt = 0
-	UserZtSd UserZt = 1
+	UserStatusDefault UserStatus = 0
+	UserStatusLock    UserStatus = 1
 )
 
 type AuthUser struct {
 	Id      GUID
-	Mc      string
-	Nc      string
+	Name    string
+	Nick    string
 	Pwd     string
-	Bz      string
-	Zt      UserZt
+	Status  UserStatus
 	Img     string
 	Created time.Time
 	Updated time.Time
@@ -31,7 +30,7 @@ type AuthUser struct {
 }
 
 // IsLock 是否锁定
-func (au AuthUser) IsLock() bool { return au.Zt == UserZtSd }
+func (au AuthUser) IsLock() bool { return au.Status == UserStatusLock }
 
 func (p *AuthUser) AddGroup(gid GUID) {
 	if -1 == Slice(&p.Groups).FindEntityIndex(gid) {
@@ -47,16 +46,16 @@ func NewUser() *AuthUser {
 }
 
 type UserAuth struct {
-	Mc string
-	Lx string
+	Name string
+	Type string
 }
 
-func (p *AuthUser) AddAuth(mc, lx string) {
-	p.Auth = append(p.Auth, UserAuth{mc, lx})
+func (p *AuthUser) AddAuth(name, _type string) {
+	p.Auth = append(p.Auth, UserAuth{name, _type})
 }
 
 type UserLine struct {
-	Id GUID
-	Mc string
-	Nc string
+	Id   GUID
+	Name string
+	Nick string
 }
