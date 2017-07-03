@@ -11,37 +11,31 @@ import (
 	"github.com/eynstudio/gow/auth/x/redissess"
 
 	"github.com/eynstudio/gobreak/orm"
-	"github.com/eynstudio/gox/di"
 )
 
-func init() {
-	Must(di.Reg(&AuthCtx{}))
-}
+var Ctx = &AuthCtx{}
 
 type AuthCtx struct {
-	*orm.Orm        `di:"*"`
-	*group.GroupCtx `di:"*"`
-	*role.RoleCtx   `di:"*"`
-	*res.ResCtx     `di:"*"`
-	*users.UserCtx  `di:"*"`
 }
 
+func (p *AuthCtx) orm() *orm.Orm { return orm.GetOrmByName("auth") }
+
 func (ac AuthCtx) GetGroupRoles(id GUID) (m GroupRoles) {
-	m.Group, _ = ac.GroupCtx.Get(id)
-	m.Roles, _ = ac.RoleCtx.AllAsTree()
+	m.Group, _ = group.Ctx.Get(id)
+	m.Roles, _ = role.Ctx.AllAsTree()
 	return
 }
 
 func (ac AuthCtx) GetRoleRes(id GUID) (m RoleRes) {
-	m.Role, _ = ac.RoleCtx.Get(id)
-	m.Res, _ = ac.ResCtx.AllAsTree()
+	m.Role, _ = role.Ctx.Get(id)
+	m.Res, _ = res.Ctx.AllAsTree()
 	return
 }
 
 func (ac AuthCtx) GetOrgGroup(oid GUID) (m []GroupItem) {
-	lst, _ := ac.GroupCtx.All(oid)
+	lst, _ := group.Ctx.All(oid)
 	for _, it := range lst {
-		v := GroupItem{AuthGroup: it, Users: ac.UserCountByGroup(it.Id)}
+		v := GroupItem{AuthGroup: it, Users: users.Ctx.UserCountByGroup(it.Id)}
 		m = append(m, v)
 	}
 	return
@@ -55,7 +49,7 @@ func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	//		resp.Ok()
 	//		return
 	//	}
-	u, ok := ac.GetByMcPwd(req.Mc, SaltPwd(req.Pwd))
+	u, ok := users.Ctx.GetByMcPwd(req.Mc, SaltPwd(req.Pwd))
 	log.Println(u, ok)
 	if !ok || u.IsLock() {
 		resp.ErrMsg("登录失败")
@@ -89,7 +83,7 @@ func (ac AuthCtx) GetUserRes(uid GUID) (lst []res.AuthRes) {
                              WHERE id = ?)
   ))
 ) ORDER BY json->'Qz' DESC`
-	err := ac.Orm.Where(sql, uid).AllJson(&lst).Err
+	err := ac.orm().Where(sql, uid).AllJson(&lst).Err
 	if err != nil {
 		log.Println(err)
 	}

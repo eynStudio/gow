@@ -5,37 +5,35 @@ import (
 
 	"github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/orm"
-	"github.com/eynstudio/gox/di"
 	"github.com/eynstudio/gox/utils"
 )
 
-func init() {
-	gobreak.Must(di.Reg(&RoleCtx{}))
-}
+var Ctx = &RoleCtx{}
 
 type RoleCtx struct {
-	*orm.Orm `di:"*"`
 }
 
+func (p *RoleCtx) orm() *orm.Orm { return orm.GetOrmByName("auth") }
+
 func (p *RoleCtx) Get(id gobreak.GUID) (m AuthRole, ok bool) {
-	ok = p.Orm.WhereId(id).GetJson2(&m)
+	ok = p.orm().WhereId(id).GetJson2(&m)
 	return
 }
 
 func (p *RoleCtx) All() (lst []AuthRole, err error) {
-	err = p.Orm.AllJson(&lst)
+	err = p.orm().AllJson(&lst)
 	return
 }
 func (p *RoleCtx) AllAsTree() (tree utils.TreeNodes, err error) {
 	var lst []AuthRole
-	if err = p.Orm.AllJson(&lst); err != nil {
+	if err = p.orm().AllJson(&lst); err != nil {
 		return nil, err
 	}
 	return utils.BuildTree(lst), nil
 }
 
 func (p *RoleCtx) Save(m *AuthRole) gobreak.IStatus {
-	err := p.Orm.SaveJson(m.Id, m)
+	err := p.orm().SaveJson(m.Id, m)
 	if err != nil {
 		log.Println(err)
 	}
@@ -43,7 +41,7 @@ func (p *RoleCtx) Save(m *AuthRole) gobreak.IStatus {
 }
 
 func (p *RoleCtx) Del(id gobreak.GUID) gobreak.IStatus {
-	err := p.Orm.DelId(&AuthRole{}, id)
+	err := p.orm().DelId(&AuthRole{}, id)
 	if err != nil {
 		log.Println(err)
 	}

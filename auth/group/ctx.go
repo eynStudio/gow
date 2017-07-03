@@ -5,24 +5,22 @@ import (
 
 	"github.com/eynstudio/gobreak"
 	"github.com/eynstudio/gobreak/orm"
-	"github.com/eynstudio/gox/di"
 )
 
-func init() {
-	gobreak.Must(di.Reg(&GroupCtx{}))
-}
+var Ctx = &GroupCtx{}
 
 type GroupCtx struct {
-	*orm.Orm `di:"*"`
 }
 
+func (p *GroupCtx) orm() *orm.Orm { return orm.GetOrmByName("auth") }
+
 func (p *GroupCtx) Get(id gobreak.GUID) (m AuthGroup, ok bool) {
-	ok = p.Orm.WhereId(id).GetJson2(&m)
+	ok = p.orm().WhereId(id).GetJson2(&m)
 	return
 }
 
 func (p *GroupCtx) All(orgid gobreak.GUID) (lst []AuthGroup, err error) {
-	err = p.Orm.Where(`json->>'OrgId'=?`, orgid).AllJson(&lst).Err
+	err = p.orm().Where(`json->>'OrgId'=?`, orgid).AllJson(&lst).Err
 	return
 }
 
@@ -35,7 +33,7 @@ func (p *GroupCtx) All(orgid gobreak.GUID) (lst []AuthGroup, err error) {
 //}
 
 func (p *GroupCtx) Save(m *AuthGroup) gobreak.IStatus {
-	err := p.Orm.SaveJson(m.Id, m)
+	err := p.orm().SaveJson(m.Id, m)
 	if err != nil {
 		log.Println(err)
 	}
@@ -43,7 +41,7 @@ func (p *GroupCtx) Save(m *AuthGroup) gobreak.IStatus {
 }
 
 func (p *GroupCtx) Del(id gobreak.GUID) gobreak.IStatus {
-	err := p.Orm.DelId(&AuthGroup{}, id)
+	err := p.orm().DelId(&AuthGroup{}, id)
 	if err != nil {
 		log.Println(err)
 	}

@@ -7,27 +7,25 @@ import (
 	"github.com/eynstudio/gobreak/db"
 	"github.com/eynstudio/gobreak/db/filter"
 	"github.com/eynstudio/gobreak/orm"
-	"github.com/eynstudio/gox/di"
 )
 
-func init() {
-	gobreak.Must(di.Reg(&UserCtx{}))
-}
+var Ctx = &UserCtx{}
 
 type UserCtx struct {
-	*orm.Orm `di:"*"`
 }
 
+func (p *UserCtx) orm() *orm.Orm { return orm.GetOrmByName("auth") }
+
 func (p *UserCtx) Get(id gobreak.GUID) (m AuthUser, ok bool) {
-	ok = p.Orm.WhereId(id).GetJson2(&m)
+	ok = p.orm().WhereId(id).GetJson2(&m)
 	return
 }
 func (p *UserCtx) GetByMcPwd(mc, pwd string) (m AuthUser, ok bool) {
-	ok = p.Orm.Where(`json->>'Mc'=? and json->>'Pwd'=?`, mc, pwd).GetJson2(&m)
+	ok = p.orm().Where(`json->>'Mc'=? and json->>'Pwd'=?`, mc, pwd).GetJson2(&m)
 	return
 }
 func (p *UserCtx) All() (lst []AuthUser, err error) {
-	err = p.Orm.AllJson(&lst)
+	err = p.orm().AllJson(&lst)
 	return
 }
 func (p *UserCtx) UserCountByGroup(gid gobreak.GUID) (n int) {
@@ -37,7 +35,7 @@ func (p *UserCtx) UserCountByGroup(gid gobreak.GUID) (n int) {
 }
 func (p *UserCtx) PageUser(page *filter.PageFilter) (m *db.Paging, err error) {
 	lst := []UserLine{}
-	s := p.Orm.From("AuthUser")
+	s := p.orm().From("AuthUser")
 	if page.Search() != "" {
 		str := "%" + page.Search() + "%"
 		s.Where(`json->>'Mc' like ? or json->>'Nc' like ?`, str, str)
@@ -57,7 +55,7 @@ func (p *UserCtx) PageGroupUserSelect(gid gobreak.GUID, page *filter.PageFilter)
 
 func (p *UserCtx) pageGroupUser(gid gobreak.GUID, page *filter.PageFilter, in bool) (m *db.Paging, err error) {
 	lst := []UserLine{}
-	s := p.Orm.From("AuthUser")
+	s := p.orm().From("AuthUser")
 	sql := gobreak.IfThenStr(in, "", "not ") + `json->'Groups' @> ?`
 	args := db.NewAgrs(sql, gid.Json())
 	if page.Search() != "" {
@@ -73,17 +71,17 @@ func (p *UserCtx) AddUserGroup(uid, gid gobreak.GUID) error {
 	log.Println(uid, gid)
 	if u, ok := p.Get(uid); ok {
 		u.AddGroup(gid)
-		return p.Orm.SaveJson(u.Id, u)
+		return p.orm().SaveJson(u.Id, u)
 	}
 	return nil
 }
 
 func (p *UserCtx) Save(m *AuthUser) gobreak.IStatus {
-	err := p.Orm.SaveJson(m.Id, m)
+	err := p.orm().SaveJson(m.Id, m)
 	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
 }
 
 func (p *UserCtx) Del(id gobreak.GUID) gobreak.IStatus {
-	err := p.Orm.DelId(&AuthUser{}, id)
+	err := p.orm().DelId(&AuthUser{}, id)
 	return gobreak.NewStatusErr(err, "保存成功", "保存失败")
 }
