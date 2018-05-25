@@ -44,12 +44,12 @@ func (ac AuthCtx) GetOrgGroup(oid GUID) (m []GroupItem) {
 func (ac AuthCtx) Login(req LoginReq) (resp LoginResp) {
 	log.Println(req)
 
-	if req.Mc == "pswang" {
+	if req.Name == "pswang" {
 		resp.Token = "eyn"
 		resp.Ok()
 		return
 	}
-	u, ok := users.Ctx.GetByMcPwd(req.Mc, SaltPwd(req.Pwd))
+	u, ok := users.Ctx.GetByMcPwd(req.Name, SaltPwd(req.Pwd))
 	log.Println(u, ok)
 	if !ok || u.IsLock() {
 		resp.ErrMsg("登录失败")

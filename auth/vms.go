@@ -18,9 +18,9 @@ type RoleRes struct {
 }
 
 type LoginReq struct {
-	Mc  string
-	Pwd string
-	Lx  string
+	Name string
+	Pwd  string
+	Auth string
 }
 
 type LoginResp struct {
